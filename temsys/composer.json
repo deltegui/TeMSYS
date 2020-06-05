@@ -1,0 +1,13 @@
+{
+    "name": "deltegui/temsys",
+    "description": "Tempanalirz Analisys System",
+    "type": "project",
+    "authors": [
+        {
+            "name": "deltegui",
+            "email": "deltegui@hotmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {}
+}

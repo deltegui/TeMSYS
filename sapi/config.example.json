@@ -1,0 +1,5 @@
+{
+    "ListenURL": "0.0.0.0:8080",
+    "DatabaseDriver": "mysql",
+    "Database": "root:root@tcp(db:3306)/tempanalizr"
+}
