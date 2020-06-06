@@ -9,5 +9,10 @@
         }
     ],
     "minimum-stability": "stable",
-    "require": {}
+    "require": {
+        "slim/slim": "4.*",
+        "slim/psr7": "^1.1",
+        "twig/twig": "^2.0",
+        "slim/csrf": "^1.0"
+    }
 }

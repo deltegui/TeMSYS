@@ -20,16 +20,18 @@ func GetAllReports(reportRepo domain.ReportRepo) http.HandlerFunc {
 func GetReportsBetweenDates(getReportsByDate domain.GetReportsByDates) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
 		presenter := phoenix.JSONPresenter{w}
-		from, err := getDateFrom(req, "from")
-		if err != nil {
+		presentErr := func(err error) {
 			log.Println(err)
 			presenter.PresentError(domain.MalformedRequestErr)
+		}
+		from, err := getDateFrom(req, "from")
+		if err != nil {
+			presentErr(err)
 			return
 		}
 		to, err := getDateFrom(req, "to")
 		if err != nil {
-			log.Println(err)
-			presenter.PresentError(domain.MalformedRequestErr)
+			presentErr(err)
 			return
 		}
 		log.Println(from, to)

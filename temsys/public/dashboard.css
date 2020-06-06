@@ -1,0 +1,127 @@
+:root {
+    --danger: #B80F0A;
+    --ok: #00B4AB;
+}
+
+body {
+    box-sizing: border-box;
+}
+
+.menu {
+    padding: 20px;
+}
+
+.status-sensor {
+    height: 30px;
+    width: 30px;
+
+    position: absolute;
+    float: left;
+
+    border-radius: 50%;
+
+    animation-name: sensor-attention-dim;
+    animation-timing-function: ease-in-out;
+    animation-duration: 1s;
+    animation-iteration-count: 3;
+}
+
+.status-sensor:hover + .status-msg {
+    display: inline;
+}
+
+.is-sensor-ok {
+    background-color: var(--ok);
+    box-shadow: 0px 0px 20px var(--ok);
+}
+
+.is-sensor-danger {
+    background-color: var(--danger);
+    box-shadow: 0px 0px 20px var(--danger);
+}
+
+@keyframes sensor-attention-dim {
+    from {
+        height: 30px;
+        width: 30px;
+    }
+    50% {
+        height: 35px;
+        width: 35px;
+    }
+    to {
+        height: 30px;
+        width: 30px;
+    }
+}
+
+#bombona-salon {
+    bottom: 49%;
+    left: 2%;
+}
+
+#bombona-habitacion {
+    bottom: 93%;
+    left: 7%;
+}
+
+#sensor-salon {
+    bottom: 4%;
+    left: 8%;
+}
+
+#sensor-habitcion {
+    bottom: 83%;
+    left: 68%;
+}
+
+#status-map-container {
+    position: relative;
+    width: max-content;
+}
+
+.status-msg {
+    width: 230px;
+    display: none;
+    position: absolute;
+    float: left;
+
+    padding: 5px;
+
+    background-color: white;
+    box-shadow: 0px 0px 10px gray;
+}
+
+#bombona-salon-msg {
+    bottom: 49%;
+    left: 6%;
+}
+
+#bombona-habitacion-msg {
+    bottom: 87%;
+    left: 11%;
+}
+
+#sensor-salon-msg {
+    bottom: 4%;
+    left: 12%;
+}
+
+#sensor-habitacion-msg {
+    bottom: 83%;
+    right: 33%;
+}
+
+#dashboard-container {
+    height: 100%;
+    width: 100%;
+    padding: 10px;
+}
+
+.user-mod {
+    margin-bottom: 10px;
+}
+
+.status-msg > h3 {
+    font-size: 20px;
+}

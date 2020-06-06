@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Log in! - TeMSYS{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="/app.css">
+{% endblock %}
+
+{% block body %}
+<div class="level" style="background-image: url('image/wallpaper{{imgNum}}.jpg');">
+    <div class="level-item">
+        <div class="box login-box">
+            <h1 class="logo">TeMSYS<h1>
+            <h1 class="sublogo">Tempanalizr Management System</h1>
+            <form method="POST" action="/login">
+                <input type="hidden" name="_csrf_token" value="">
+                <div class="field">
+                    <label class="label">Name</label>
+                    <div class="control">
+                        <input name="username" class="input" type="text" placeholder="Name" value="" required autofocus>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label">Password</label>
+                    <div class="control">
+                        <input name="password" class="input" type="password" placeholder="Password" required>
+                    </div>
+                </div>
+                <div class="field">
+                    <button class="button is-fullwidth is-primary">Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
