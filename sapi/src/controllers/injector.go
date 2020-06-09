@@ -6,6 +6,7 @@ import (
 	"sensorapi/src/cronscheluder"
 	"sensorapi/src/domain"
 	"sensorapi/src/persistence"
+	"sensorapi/src/queues"
 	"sensorapi/src/validator"
 
 	"github.com/deltegui/phoenix"
@@ -30,6 +31,7 @@ func registerDependencies(app phoenix.App) {
 	app.Injector.Add(persistence.NewSqlxReportRepo)
 	app.Injector.Add(domain.NewReporter)
 	app.Injector.Add(cronscheluder.NewCronScheluder)
+	app.Injector.Add(queues.NewReportRabbitMQ)
 }
 
 func Register(app phoenix.App, config configuration.Configuration) {

@@ -8,3 +8,4 @@ class Sensor:
 
     @staticmethod
     def from_array(dictionary):
+        self.
