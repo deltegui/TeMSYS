@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 @require_http_methods(['GET'])
 def login_index(request):
     if request.user.is_authenticated:
-        return redirect('/panel')
+        return redirect('/panel/status')
     return render(request, 'users/index.html', {'form': LoginForm()})
 
 
@@ -20,7 +20,7 @@ def process_login(request):
     if user is None:
         return redirect('login_index')
     login(request, user)
-    return redirect('/panel')
+    return redirect('/panel/status')
 
 
 @require_http_methods(['GET'])
