@@ -1,0 +1,35 @@
+{
+  "name": "tempanalizr",
+  "version": "0.1.0",
+  "description": "tempanalizr",
+  "main": "./src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./src/index.js",
+    "build": "webpack --config ./webpack.config.js"
+  },
+  "author": "deltegui",
+  "license": "ISC",
+  "dependencies": {
+    "amqplib": "^0.5.5",
+    "body-parser": "^1.19.0",
+    "cron": "^1.7.2",
+    "express": "^4.17.1",
+    "mysql": "^2.17.1",
+    "simplejsonvalidator": "^1.2.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.3",
+    "@babel/core": "^7.8.3",
+    "@babel/preset-env": "^7.8.3",
+    "babel-loader": "^8.0.6",
+    "eslint": "^6.6.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-plugin-import": "^2.20.0",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.18.0",
+    "jest": "^25.1.0",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10"
+  }
+}

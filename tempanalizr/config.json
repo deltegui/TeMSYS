@@ -1,0 +1,18 @@
+{
+  "port": 8081,
+  "host": "0.0.0.0",
+  "database": {
+    "host": "temapidb",
+    "user": "root",
+    "password": "root",
+    "database": "tempanalizr"
+  },
+  "sensorAPI": {
+    "hostname": "sensorapi_api_1",
+    "port": 8080
+  },
+  "rabbitmq": {
+    "url": "amqp://guest:guest@rabbit:5672",
+    "exchange": "sapi_reports"
+  }
+}
