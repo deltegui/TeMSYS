@@ -1,0 +1,34 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@model LoginFormViewModel
+
+
+<div class="level">
+    <div class="level-item">
+        <div class="box login-box">
+            <h1 class="logo">TeMSYS</h1>
+            <h1 class="sublogo">Tempanalizr Management System</h1>
+            <form asp-controller="User" asp-action="login" method="post">
+                <div class="field">
+                    <label class="label">Name</label>
+                    <div class="control">
+                        <input class="input" asp-for="Username" autofocus />
+                    </div>
+                    <span asp-validation-for="Username" class="help is-danger"></span>
+                </div>
+                <div class="field">
+                    <label class="label">Password</label>
+                    <div class="control">
+                        <input class="input" asp-for="Password" />
+                    </div>
+                    <span asp-validation-for="Password" class="help is-danger"></span>
+                </div>
+                <div class="field">
+                    <div class="is-danger" asp-validation-summary="ModelOnly"></div>
+                    <input class="button is-fullwidth is-primary" type="submit" value="Login"/>
+                </div>
+            </form>    
+        </div>
+    </div>
+</div>

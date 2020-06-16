@@ -5,31 +5,39 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using temsys.Models;
+using Microsoft.AspNetCore.Identity;
 using temsys.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace temsys.Controllers {
-    public class HomeController : Controller {
-        private readonly ISensorRepository sensorRepository;
+    public class UserController : Controller {
+        private readonly TemsysDbContext repository;
 
-        public HomeController(ISensorRepository sensorRepository) {
-            this.sensorRepository = sensorRepository;
+        public UserController(TemsysDbContext repository) {
+            this.repository = repository;
         }
 
-        public async Task<IActionResult> Index() {
-            IList<Report> reportsList = await this.sensorRepository.GetOneSensorStateByName("salon");
-            foreach(var r in reportsList) {
-                Console.WriteLine(r.Value);
+        public IActionResult Index() {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Login(LoginFormViewModel model) {
+            if(!ModelState.IsValid) {
+                return View("Index", model);
             }
-            return View();
-        }
-
-        public IActionResult Privacy() {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error() {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var users = from u in repository.Users where u.UserName == model.Username select u;
+            if(!users.Any()) {
+                ModelState.AddModelError(string.Empty, "User does not exist");
+                return View("Index");
+            }
+            var user = users.First();
+            if(user.PasswordHash != model.Password) {
+                ModelState.AddModelError(string.Empty, "Incorrect password");
+                return View("Index");
+            }
+            return Content($"Name: {user.UserName}, Password: {user.PasswordHash}");
         }
     }
 }

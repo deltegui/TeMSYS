@@ -1,14 +1,12 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using temsys.Models;
+using Microsoft.Extensions.Options;
 using temsys.Services;
 
 namespace temsys {
@@ -24,6 +22,7 @@ namespace temsys {
             services.AddControllersWithViews();
             services.AddTransient<ISensorRepository, SapiRepository>(this.craeteSapiRepository);
             services.AddTransient<IReportTypeRepository, SapiRepository>(this.craeteSapiRepository);
+            services.AddDbContext<TemsysDbContext>(options => options.UseMySQL(Configuration.GetConnectionString("MysqlDB")));
         }
 
         private SapiRepository craeteSapiRepository(IServiceProvider provider) => new SapiRepository("localhost:8080");
@@ -40,11 +39,12 @@ namespace temsys {
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
+            app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=User}/{action=Index}/{id?}");
             });
         }
     }

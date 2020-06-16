@@ -12,9 +12,4 @@ namespace temsys.Services {
         Task DeleteSensorByName(string name);
         Task<IList<Report>> GetOneSensorStateByName(string name);
     }
-
-    public interface IReportTypeRepository {
-        Task<IList<string>> GetAllReportTypes();
-        Task SaveReportType(string reportType);
-    }
 }
