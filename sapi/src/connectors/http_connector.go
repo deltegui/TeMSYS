@@ -20,7 +20,7 @@ func (connector HTTPConnector) ReadDataFor(sensor domain.Sensor) ([]domain.Repor
 	if err != nil {
 		log.Fatalf("%v", err)
 	}
-	ctx, cancel := context.WithTimeout(req.Context(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(req.Context(), 3*time.Second)
 	defer cancel()
 	req = req.WithContext(ctx)
 	client := http.DefaultClient

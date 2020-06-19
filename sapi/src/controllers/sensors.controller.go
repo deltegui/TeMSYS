@@ -28,6 +28,6 @@ func AllSensorNow(allSensorNowCase domain.AllSensorNowCase) http.HandlerFunc {
 func registerSensorsRoutes(app phoenix.App) {
 	app.MapGroup("/sensors", func(m phoenix.Mapper) {
 		m.MapRoot(GetAllSensors)
-		m.Get("/all/now", AllSensorNow)
+		m.Get("/now", AllSensorNow)
 	})
 }

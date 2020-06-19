@@ -64,7 +64,7 @@ func getDateFrom(req *http.Request, query string) (time.Time, error) {
 }
 
 func registerReportRoutes(app phoenix.App) {
-	app.MapGroup("/routes", func(m phoenix.Mapper) {
+	app.MapGroup("/report", func(m phoenix.Mapper) {
 		m.MapRoot(GetAllReports)
 		m.Get("/dates", GetReportsBetweenDates)
 	})

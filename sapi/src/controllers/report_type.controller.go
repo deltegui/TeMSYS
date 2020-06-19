@@ -30,7 +30,7 @@ func SaveReportType(reportTypeRepo domain.ReportTypeRepo) http.HandlerFunc {
 }
 
 func registerReportTypesRoutes(app phoenix.App) {
-	app.MapGroup("/report/types", func(m phoenix.Mapper) {
+	app.MapGroup("/reporttypes", func(m phoenix.Mapper) {
 		m.Get("/all", GetReportTypes)
 		m.Post("/create/{name}", SaveReportType)
 	})
