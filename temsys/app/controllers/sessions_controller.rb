@@ -1,14 +1,19 @@
 class SessionsController < ApplicationController
   def index
+    if helpers.is_logged?
+      redirect_to '/dashboard'
+    end
   end
 
   def login_user
-    user = User.find_by username: params[:username]
-    if !user || !user.authenticate(params[:password])
+    if helpers.is_logged?
+      redirect_to '/dashboard'
+    end
+    username, password = params.values_at(:username, :password)
+    unless helpers.login(username, password)
       render :index
       return
     end
-    session[:user_id] = user.id
     redirect_to '/dashboard'
   end
 
@@ -16,4 +21,5 @@ class SessionsController < ApplicationController
     session.delete :user_id
     redirect_to '/'
   end
+
 end
