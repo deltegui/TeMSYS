@@ -1,14 +1,10 @@
 class SessionsController < ApplicationController
   def index
-    if helpers.is_logged?
-      redirect_to '/dashboard'
-    end
+    redirect_to '/dashboard' if helpers.is_logged?
   end
 
   def login_user
-    if helpers.is_logged?
-      redirect_to '/dashboard'
-    end
+    redirect_to '/dashboard' if helpers.is_logged?
     username, password = params.values_at(:username, :password)
     unless helpers.login(username, password)
       render :index

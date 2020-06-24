@@ -10,4 +10,18 @@ class ActiveSupport::TestCase
   fixtures :all
 
   # Add more helper methods to be used by all tests here...
+
+  def sign_in
+    post '/login', params: {username: 'user', password: 'pass'}
+  end
+
+  def logout
+    get '/logout'
+  end
+
+  def sign_in_transaction
+    sign_in
+    yield
+    logout
+  end
 end
