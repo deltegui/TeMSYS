@@ -3,4 +3,9 @@ Rails.application.routes.draw do
   root 'sessions#index'
   post '/login', to: 'sessions#login_user'
   get '/logout', to: 'sessions#logout'
+
+  scope '/dashboard' do
+    get '/status', to: 'status#show'
+    get '/users_management', to: 'user_management#index'
+  end
 end

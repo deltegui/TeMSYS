@@ -3,73 +3,59 @@ require 'json'
 
 class SapiRepository
 
-  def initialize(url)
-    @base_url = url
+  def initialize(requester)
+    @requester = requester
+  end
+
+  def self.build(url)
+    new HttpRequester.new(url)
   end
 
   def report_types
-    self.get '/reporttypes/all'
+    @requester.get '/reporttypes/all'
   end
 
   def create_report_type(name)
-    self.post "/reporttypes/create/#{name}"
+    @requester.post "/reporttypes/create/#{name}"
   end
 
   def active_sensors
-
+    @requester.get "/sensors"
   end
 
   def deleted_sensors
-
+    @requester.get "/sensors?deleted=true"
   end
 
-  def active_state
-
+  def all_state
+    @requester.get "/sensors/now"
   end
 
   def create_sensor(sensor)
-
+    @requester.post "/sensor", sensor
   end
 
   def sensor(name)
-
+    @requester.get "/sensor/#{name}"
   end
 
   def delete_sensor(name)
-
+    @requester.delete "/sensor/#{name}"
   end
 
   def update_sensor(sensor)
-
+    @requester.post "/sensor", sensor
   end
 
-  def sensor_state(sensor)
-
+  def sensor_state(name)
+    @requester.get "/sensor/#{name}/now"
   end
 
-  def report(between)
-
-  end
-
-  private
-
-  def make_uri(endpoint)
-    URI.parse "#{@base_url}#{endpoint}"
-  end
-
-  def get(endpoint)
-    res = Net::HTTP:get(self.make_uri(endpoint))
-    JSON[res.body]
-  end
-
-  def post(endpoint, data = nil)
-    data ||= ""
-    res = Net:HTTP::post(self.make_uri(endpoint), data, 'Content-Type' => 'application/json')
-    JSON[res.body]
-  end
-
-  def delete(endpoint)
-    res = Net::HTTP::delete(self.make_uri(endpoint))
-    JSON[res.body]
+  def report(between = nil)
+    if between
+      @requester.get "/report/dates?from=#{between['from']}&to=#{between['to']}"
+    else
+      @requester.get "/report"
+    end
   end
 end
