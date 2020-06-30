@@ -41,6 +41,31 @@ func CreateViewModelFromSensor(sensor Sensor) SensorViewModel {
 	}
 }
 
+type ReportViewModel struct {
+	ReportType string  `json:"type"`
+	SensorName string  `json:"sensor"`
+	Date       string  `json:"date"`
+	Value      float32 `json:"value"`
+}
+
+func createReportViewModel(report Report) ReportViewModel {
+	date := report.Date.Format("2006-01-02T15:04:05.000Z")
+	return ReportViewModel{
+		ReportType: report.ReportType,
+		SensorName: report.SensorName,
+		Date:       date,
+		Value:      report.Value,
+	}
+}
+
+func transformReportsToViewModels(reports []Report) []ReportViewModel {
+	var output []ReportViewModel
+	for _, r := range reports {
+		output = append(output, createReportViewModel(r))
+	}
+	return output
+}
+
 type GetAllRequest struct {
 	WantDeleted bool
 }
@@ -216,7 +241,7 @@ func (useCase SensorNowCase) Exec(presenter Presenter, req UseCaseRequest) {
 		presenter.PresentError(err)
 		return
 	}
-	presenter.Present(reports)
+	presenter.Present(transformReportsToViewModels(reports))
 }
 
 type AllSensorNowCase struct {
@@ -242,7 +267,7 @@ func (useCase AllSensorNowCase) Exec(presenter Presenter, req UseCaseRequest) {
 			reports = append(reports, r...)
 		}
 	}
-	presenter.Present(reports)
+	presenter.Present(transformReportsToViewModels(reports))
 }
 
 type GetSensorCase struct {
