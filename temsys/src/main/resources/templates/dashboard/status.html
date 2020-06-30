@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/bootstrap.min.css"/>
+    <script src="/jquery.min.js"></script>
+    <script src="/bootstrap.min.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarmenu" aria-controls="navbarmenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarmenu">
+        <a class="navbar-brand">TeMSYS</a>
+        <a class="btn btn-outline-success" href="/login?logout">Logout</a>
+        <a class="nav-link" href="/dashboard/admin/users">Users</a>
+        <a class="nav-link" href="/dashboard/admin/sensors">Sensors</a>
+        <a class="nav-link" href="/dashboard/admin/report_types">Report Types</a>
+    </div>
+</nav>
+<div class="container">
+    <div>
+        <h1>Current system status</h1>
+        <ul class="list-group">
+            <li class="list-group-item flex-column align-items-start" th:classappend="${s.haveReports()} ? list-group-item-success : list-group-item-danger" th:each="s : ${sensors}">
+                <h4 th:text="${s.getSensorName()}"></h4>
+                <div th:each="report : ${s.getReports()}">
+                    <span th:text="${report.getType()}"></span>:
+                    <span th:text="${report.getValue()}"></span>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>

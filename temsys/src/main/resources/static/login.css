@@ -1,0 +1,31 @@
+.login-box {
+  margin-top: 70px;
+  width: 500px;
+}
+
+.logo {
+  font-size: 50px;
+  text-align: center;
+  color: #00d1b2;
+}
+
+.sublogo {
+  text-align: center;
+}
+
+.container {
+  min-height: 100vh;
+}
+
+.btn-temsys {
+  background-color: #00d1b2;
+}
+
+form {
+  padding: 10px;
+  background-color: var(--gray-dark);
+}
+
+body {
+  background-image: url(background.jpg);
+}
