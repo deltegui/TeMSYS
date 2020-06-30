@@ -1,24 +1,25 @@
 package com.deltegui.temsys.sensors.application;
 
 import com.deltegui.temsys.reports.Report;
+import com.deltegui.temsys.sensors.domain.Sensor;
 
 import java.util.List;
 
 public class SensorStatusModel {
-    private String sensorName;
+    private Sensor sensor;
     private List<Report> reports;
 
-    public SensorStatusModel(String sensorName, List<Report> currentStatus) {
-        this.sensorName = sensorName;
+    public SensorStatusModel(Sensor sensor, List<Report> currentStatus) {
+        this.sensor = sensor;
         this.reports = currentStatus;
     }
 
-    protected void addReport(Report report) {
-        this.reports.add(report);
+    public String getSensorName() {
+        return this.sensor.getName();
     }
 
-    public String getSensorName() {
-        return sensorName;
+    public String getSensorIp() {
+        return this.sensor.getConnectionValue();
     }
 
     public List<Report> getReports() {

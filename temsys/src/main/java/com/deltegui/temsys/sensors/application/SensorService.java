@@ -22,10 +22,10 @@ public class SensorService {
     }
 
     private List<SensorStatusModel> mergeSensorsWithReports(List<Sensor> sensors, List<Report> reports) {
-        List<SensorStatusModel> models = new ArrayList<SensorStatusModel>();
+        var models = new ArrayList<SensorStatusModel>();
         for(Sensor currentSensor : sensors) {
             List<Report> filteredReports = currentSensor.filterReports(reports);
-            models.add(new SensorStatusModel(currentSensor.getName(), filteredReports));
+            models.add(new SensorStatusModel(currentSensor, filteredReports));
         }
         return models;
     }

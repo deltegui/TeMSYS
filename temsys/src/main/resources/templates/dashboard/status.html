@@ -28,6 +28,7 @@
         <ul class="list-group">
             <li class="list-group-item flex-column align-items-start" th:classappend="${s.haveReports()} ? list-group-item-success : list-group-item-danger" th:each="s : ${sensors}">
                 <h4 th:text="${s.getSensorName()}"></h4>
+                <span th:text="${s.getSensorIp()}"></span>
                 <div th:each="report : ${s.getReports()}">
                     <span th:text="${report.getType()}"></span>:
                     <span th:text="${report.getValue()}"></span>
