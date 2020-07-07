@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/login.css"/>
+    <script src="/jquery.min.js"></script>
+    <script src="/bootstrap.min.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarmenu" aria-controls="navbarmenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarmenu">
+        <a class="navbar-brand">TeMSYS</a>
+        <a class="btn btn-outline-success" href="/login?logout">Logout</a>
+        <a class="nav-link" href="/dashboard/admin/users">Users</a>
+        <a class="nav-link" href="/dashboard/admin/sensors">Sensors</a>
+        <a class="nav-link" href="/dashboard/admin/report_types">Report Types</a>
+    </div>
+</nav>
+<div class="container">
+    <div>
+        <h1>User management</h1>
+
+        <div class="list-group-item flex-column align-items-start">
+            <h3>Diego</h3>
+            <form>
+                <div class="form-group">
+                    <label for="password1">Password</label>
+                    <input type="password" class="form-control" id="password1">
+                </div>
+                <div class="form-group">
+                    <label for="exampleFormControlSelect1">Example select</label>
+                    <select class="form-control" id="exampleFormControlSelect1">
+                        <option>ADMIN</option>
+                        <option>ANALYST</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Update</button>
+            </form>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

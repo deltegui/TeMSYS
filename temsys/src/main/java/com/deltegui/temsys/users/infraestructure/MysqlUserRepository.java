@@ -8,7 +8,7 @@ import java.util.List;
 public class MysqlUserRepository implements UserRepository {
     @Override
     public List<User> getAll() {
-        return 
+        return null;
     }
 
     @Override

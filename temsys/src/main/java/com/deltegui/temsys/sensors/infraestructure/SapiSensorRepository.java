@@ -3,7 +3,6 @@ package com.deltegui.temsys.sensors.infraestructure;
 import com.deltegui.temsys.reports.Report;
 import com.deltegui.temsys.sensors.application.SensorRepository;
 import com.deltegui.temsys.sensors.domain.Sensor;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
