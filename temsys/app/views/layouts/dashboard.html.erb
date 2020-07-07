@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Temsys</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <%= stylesheet_link_tag  'application', media: 'all' %>
+    <link rel="stylesheet" href="/bootstrap.min.css"/>
+    <script src="/jquery.min.js"></script>
+    <script src="/bootstrap.min.js"></script>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarmenu" aria-controls="navbarmenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarmenu">
+        <a class="navbar-brand">TeMSYS</a>
+        <a class="btn btn-outline-success" href="/logout">Logout</a>
+        <a class="nav-link" href="/dashboard/admin/users">Users</a>
+        <a class="nav-link" href="/dashboard/admin/sensors">Sensors</a>
+        <a class="nav-link" href="/dashboard/admin/report_types">Report Types</a>
+      </div>
+    </nav>
+    <%= yield %>
+  </body>
+</html>

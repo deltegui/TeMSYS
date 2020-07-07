@@ -1,1 +1,0 @@
-insert into users values('demo', '$2y$12$ePa2F6uIx67sINDSb2DNVueDpFIdpA2bQtS.IpV6OwsP/X8LJdlku', 'admin');
