@@ -10,5 +10,6 @@ Rails.application.routes.draw do
 
   scope '/dashboard/admin' do
     get '/users', to: 'user_management#index'
+    get '/user/create', to: 'user_management#show_create_user'
   end
 end

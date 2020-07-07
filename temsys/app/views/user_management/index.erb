@@ -1,8 +1,10 @@
 <div class="container">
   <div>
     <h1>User management</h1>
+    <a class="btn btn-primary" href="/dashboard/admin/user/create">Create user</a>
+    <% @users.each do |user| %>
     <div class="list-group-item flex-column align-items-start">
-      <h3>Diego</h3>
+      <h3> <%= user.username %> </h3>
       <form>
         <div class="form-group">
           <label for="password1">Password</label>
@@ -11,12 +13,13 @@
         <div class="form-group">
           <label for="exampleFormControlSelect1">Example select</label>
           <select class="form-control" id="exampleFormControlSelect1">
-            <option>ADMIN</option>
-            <option>ANALYST</option>
+            <option <%= 'selected' if user.is_admin? %>>ADMIN</option>
+            <option <%= 'selected' unless user.is_admin? %>>ANALYST</option>
           </select>
         </div>
         <button type="submit" class="btn btn-primary">Update</button>
       </form>
     </div>
+    <% end %>
   </div>
 </div>
