@@ -1,0 +1,27 @@
+<div class="container">
+  <div>
+    <h1>User management</h1>
+    <a class="btn btn-primary" href="/dashboard/admin/user/create">Create user</a>
+    <% @users.each do |user| %>
+    <div class="list-group-item flex-column align-items-start">
+      <h3> <%= user.username %> </h3>
+      <%= form_with model: user, url: '/dashboard/admin/user/update', method: 'post' do |f| %>
+        <%= f.hidden_field :username, value: user.username %>
+        <div class="form-group">
+          <%= label_tag :password %>
+          <%= f.password_field :password, class: "form-control" %>
+        </div>
+        <div class="form-group">
+          <%= label_tag :role %>
+          <%= f.select :role, User.available_roles, {}, class: "form-control", value: user.role %>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Update</button>
+      <% end %>
+      <%= form_with url: '/dashboard/admin/user/delete', method: 'post' do |f| %>
+        <%= f.hidden_field :user, class: "form-control", value: user.username %>
+        <button type="submit" class="btn btn-danger btn-block">Delete</button>
+      <% end %>
+    </div>
+    <% end %>
+  </div>
+</div>

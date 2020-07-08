@@ -2,24 +2,21 @@
   <div>
     <h1>Create user</h1>
     <div class="list-group-item flex-column align-items-start">
-      <form>
+      <%= form_with model: @user, url: '/dashboard/admin/user/create', method: 'post' do |f| %>
         <div class="form-group">
-          <label for="username">Username</label>
-          <input type="text" class="form-control" id="username">
+          <%= label_tag :username %>
+          <%= f.text_field :username, class: "form-control" %>
         </div>
         <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" class="form-control" id="password">
+          <%= label_tag :password %>
+          <%= f.password_field :password, class: "form-control" %>
         </div>
         <div class="form-group">
           <label for="role">Example select</label>
-          <select class="form-control" id="role">
-            <option>ADMIN</option>
-            <option>ANALYST</option>
-          </select>
+          <%= f.select :role, User.available_roles, {}, class: "form-control" %>
         </div>
         <button type="submit" class="btn btn-primary">Create</button>
-      </form>
+      <% end %>
     </div>
   </div>
 </div>
