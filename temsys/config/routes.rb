@@ -22,4 +22,9 @@ Rails.application.routes.draw do
     get '/create', to: 'sensor_management#show_create_sensor'
     post '/create', to: 'sensor_management#create_sensor'
   end
+
+  scope '/dashboard/admin/report_types' do
+    get '', to: 'report_type_management#index'
+    post '/create', to: 'report_type_management#create_report_type'
+  end
 end
