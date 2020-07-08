@@ -11,6 +11,10 @@ class SapiRepository
     new HttpRequester.new(url)
   end
 
+  def self.from_config
+    SapiRepository.build Rails.application.config.sapi.url
+  end
+
   def report_types
     @requester.get '/reporttypes/all'
   end
@@ -44,7 +48,7 @@ class SapiRepository
   end
 
   def update_sensor(sensor)
-    @requester.post "/sensor", sensor
+    @requester.post "/sensor/update", sensor
   end
 
   def sensor_state(name)

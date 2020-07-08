@@ -8,11 +8,18 @@ Rails.application.routes.draw do
     get '/status', to: 'status#index'
   end
 
-  scope '/dashboard/admin' do
-    get '/user', to: 'user_management#index'
-    get '/user/create', to: 'user_management#show_create_user'
-    post '/user/create', to: 'user_management#create_user'
-    post '/user/delete', to: 'user_management#delete_user'
-    post '/user/update', to: 'user_management#update_user'
+  scope '/dashboard/admin/user' do
+    get '', to: 'user_management#index'
+    get '/create', to: 'user_management#show_create_user'
+    post '/create', to: 'user_management#create_user'
+    post '/delete', to: 'user_management#delete_user'
+    post '/update', to: 'user_management#update_user'
+  end
+
+  scope '/dashboard/admin/sensor' do
+    get '', to: 'sensor_management#index'
+    post '/update', to: 'sensor_management#update_sensor'
+    get '/create', to: 'sensor_management#show_create_sensor'
+    post '/create', to: 'sensor_management#create_sensor'
   end
 end

@@ -1,3 +1,5 @@
+require 'json'
+
 class HttpRequester
 
   def initialize(base_url)
@@ -10,8 +12,8 @@ class HttpRequester
   end
 
   def post(endpoint, data = nil)
-    data ||= ""
-    res = Net::HTTP::post(self.make_uri(endpoint), data, 'Content-Type' => 'application/json')
+    data ||= {}
+    res = Net::HTTP::post(self.make_uri(endpoint), data.to_json, 'Content-Type' => 'application/json')
     JSON[res]
   end
 

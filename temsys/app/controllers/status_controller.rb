@@ -2,7 +2,7 @@ class StatusController < ApplicationController
   before_action :athorized
 
   def initialize
-    @sapi = SapiRepository::build "http://localhost:8080"
+    @sapi = SapiRepository::from_config
   end
 
   def index
