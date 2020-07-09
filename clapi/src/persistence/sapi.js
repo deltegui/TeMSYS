@@ -89,7 +89,7 @@ const sensorRepo = {
   getReportsBetweenDates(from, to) {
     return makeRequest({
       method: HTTP_GET,
-      path: `/reports/dates?from=${from.toJSON()}&to=${to.toJSON()}`,
+      path: `/report/dates?from=${from.toJSON()}&to=${to.toJSON()}`,
     });
   },
 };

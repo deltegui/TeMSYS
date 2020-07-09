@@ -15,9 +15,17 @@ app.use((_, res, next) => {
   });
   next();
 });
+app.use((req, _, next) => {
+  console.log(`Request from ${req.ip} [${req.method}] ${req.path}`);
+  next();
+});
 api(app);
 printLogo();
 
 initialSync()
   .then(startQueueListening)
-  .then(() => app.listen(config.port, config.host, () => console.log(`Running on ${config.port}`)));
+  .then(() => app.listen(config.port, config.host, () => console.log(`Running on ${config.port}`)))
+  .catch(err => {
+    console.error(`Error while doing initial sync:`);
+    console.error(err);
+  });
