@@ -1,4 +1,4 @@
-class ReportTypeManagementController < ApplicationController
+class ReportTypeManagementController < AdminController
 
   def initialize
     @sapi = SapiRepository::from_config

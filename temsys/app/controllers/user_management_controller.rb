@@ -1,5 +1,4 @@
-class UserManagementController < ApplicationController
-  before_action :athorized
+class UserManagementController < AdminController
 
   def index
     @users = User.all

@@ -22,9 +22,11 @@
       <div class="collapse navbar-collapse" id="navbarmenu">
         <a class="navbar-brand">TeMSYS</a>
         <a class="btn btn-outline-success" href="/logout">Logout</a>
+        <% if current_user.is_admin? %>
         <a class="nav-link" href="/dashboard/admin/user">Users</a>
         <a class="nav-link" href="/dashboard/admin/sensor">Sensors</a>
         <a class="nav-link" href="/dashboard/admin/report_types">Report Types</a>
+        <% end %>
       </div>
     </nav>
     <%= yield %>

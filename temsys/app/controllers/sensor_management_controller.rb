@@ -1,4 +1,4 @@
-class SensorManagementController < ApplicationController
+class SensorManagementController < AdminController
 
   def initialize
     @sapi = SapiRepository::from_config
