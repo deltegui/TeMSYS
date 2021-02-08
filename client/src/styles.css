@@ -1,0 +1,94 @@
+:root {
+    --bg-main-color: #1a1a1d;
+    --bg-alternative-color: #202020;
+    --fg-strong-color: #c3073f;
+    --fg-semi-color: #a31c52;
+    --fg-weak-color: #8f1a49;
+    --fg-green-color: #14a690;
+}
+
+@font-face {
+    font-family: assistant;
+    src: url('/assets/Assistant-Medium.ttf');
+}
+
+@font-face {
+    font-family: opensans;
+    src: url('/assets/OpenSans-Regular.ttf');
+}
+
+* {
+    box-sizing: border-box;
+    color: white;
+    font-family: 'opensans';
+}
+
+body {
+    padding: 0px;
+    margin: 0px;
+    background-color: var(--bg-main-color);
+}
+
+h1 {
+    font-family: 'assistant';
+    color: var(--fg-semi-color);
+}
+
+.temsys-input {
+    --main-color: var(--fg-weak-color);
+    --text-color: white;
+
+    width: 100%;
+    display: block;
+
+    border-style: solid;
+    border-width: 2px;
+    border-color: #29292e;
+    border-radius: 3px;
+
+    padding: 10px;
+
+    background-color: #29292e;
+    color: white;
+
+    transition: border-color .2s;
+}
+
+.temsys-input:hover, .temsys-input:focus-within {
+    border-color: var(--main-color);
+}
+
+.temsys-btn {
+    --main-color: var(--fg-semi-color);
+    --text-color: white;
+
+    padding: 10px 20px 10px 20px;
+
+    border-style: solid;
+    border-width: 2px;
+    border-color: var(--main-color);
+    border-radius: 3px;
+
+    color: var(--text-color);
+    background-color: rgba(0, 0, 0, 0);
+
+    box-shadow: 5px 5px black;
+
+    transition: background-color .2s;
+}
+
+.temsys-btn:hover {
+    background-color: var(--main-color);
+}
+
+.temsys-btn:active {
+    box-shadow: 0px 0px black;
+}
+
+form * {
+    margin-top: 10px;
+}
+
+.temsys-green {
+    --main-color: var(--fg-green-color);
+}

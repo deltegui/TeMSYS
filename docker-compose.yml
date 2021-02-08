@@ -1,0 +1,31 @@
+services:
+    web:
+        build: .
+        restart: on-failure
+        ports:
+            - "3000:3000"
+        links:
+            - mariadb
+        depends_on:
+            - mariadb
+        environment:
+            - CONFIG_DBNAME=root:root@tcp(mariadb:3306)/temsys
+            - CONFIG_URL=0.0.0.0:3000
+            - CONFIG_JWTKEY=${JWT_KEY}
+            - CONFIG_DBDRIVER=mysql
+            - CONFIG_TLSCRT=./server.crt
+            - CONFIG_TLSKEY=./server.key
+            - CONFIG_TLSENABLED=true
+            - CONFIG_CORS=${CORS}
+
+    mariadb:
+        image: "mariadb:10.5.8-focal"
+        volumes:
+            - ${DB_DATA}:/var/lib/mysql
+        environment:
+            - MYSQL_ROOT_PASSWORD=root
+            - MYSQL_DATABASE=temsys
+            - MYSQL_USER=temsys
+            - MYSQL_PASSWORD=temsys
+        ports:
+            - "3306:3306"

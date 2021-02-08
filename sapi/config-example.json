@@ -1,6 +1,0 @@
-{
-    "ListenURL": "localhost:8080",
-    "DatabaseDriver": "mysql",
-    "Database": "root:root@tcp(localhost:3306)/sapi",
-    "RabbitMQ": "amqp://localhost:5672"
-}

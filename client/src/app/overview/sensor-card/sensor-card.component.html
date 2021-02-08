@@ -1,0 +1,15 @@
+<div class="card">
+    <aside>
+        <span [ngClass]="enabled ? 'sensor-enabled' : 'sensor-disabled'"></span>
+        <h1>{{name}}</h1>
+    </aside>
+    <main>
+        <div *ngIf="enabled">
+            <h1>{{temperature}}ºC</h1>
+            <h2 *ngIf="humidity">Humedad: {{humidity}}%</h2>
+        </div>
+        <div *ngIf="!enabled">
+            <h2>Sensor is not responding</h2>
+        </div>
+    </main>
+</div>

@@ -1,0 +1,10 @@
+{
+    "ListenURL": "localhost:3000",
+    "JWTKey": "blablamykeyblabla",
+    "DatabaseDriver": "mysql",
+    "Database": "root:root@tcp(localhost:3306)/temsys",
+    "TLSKEY": "../server.key",
+    "TLSCRT": "../server.crt",
+    "TLSEnabled": false,
+    "CORS":  "http://localhost:5000"
+}
