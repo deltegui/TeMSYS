@@ -1,16 +1,25 @@
 import { environment } from '../../environments/environment';
 
-import { Sensor, Report } from './models';
+import {
+  Sensor,
+  Report,
+  User,
+} from './models';
 import {
   SensorRepository,
   ReportRepository,
+  UserRepository,
 } from './gateways';
 
-async function makeRequest(endpoint: string, body = undefined): Promise<any> {
+function isApiError(err: any): boolean {
+  return (!!err.Code || err.Code === 0) && !!err.Reason;
+}
+
+async function makeRequest(endpoint: string, body: any = undefined, method: string = 'GET'): Promise<any> {
   let reqConfig = undefined;
   if (body) {
     reqConfig = {
-      method: 'POST',
+      method,
       body: JSON.stringify(body),
       headers: {
         'Content-Type': 'application/json',
@@ -18,7 +27,24 @@ async function makeRequest(endpoint: string, body = undefined): Promise<any> {
     };
   }
   return fetch(`${environment.apiURL}${endpoint}`, reqConfig)
-    .then(res => res.json());
+    .then(async (res) => {
+      if (res.ok) {
+        return res.json();
+      }
+      throw await res.json()
+    })
+    .catch((err) => {
+      if (isApiError(err)) {
+        throw {
+          code: err.Code,
+          reason: err.Reason,
+        };
+      }
+      throw {
+        code: -1,
+        reason: err.toString(),
+      };
+    });
 }
 
 export class ApiSensorRepository implements SensorRepository {
@@ -101,4 +127,22 @@ function passReportsToRealDate(reports: any[]): Report[] {
     r.date = new Date(r.date)
     return r;
   });
+}
+
+export class ApiUserRepository implements UserRepository {
+  async login(body: { name: string, password: string }): Promise<User> {
+    return makeRequest('/user/login', body, 'POST')
+      .then(({ name, role, token }) => {
+        return {
+          name,
+          role,
+          token: {
+            value: token.value,
+            expires: token.expires,
+            owner: token.owner,
+            role: token.role,
+          },
+        };
+      })
+  }
 }

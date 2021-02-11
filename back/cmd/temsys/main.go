@@ -20,6 +20,12 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+var optionsHandler http.HandlerFunc = func(w http.ResponseWriter, req *http.Request) {
+	// Response CORS headers without content. Prevents CORS preflight
+	// error in Firefox.
+	w.WriteHeader(http.StatusNoContent)
+}
+
 type context struct {
 	Config    configuration.Configuration
 	DB        *sqlx.DB
@@ -85,55 +91,64 @@ func mountRoutes(r chi.Router, ctx context) {
 func boostrapAPI(ctx context) chi.Router {
 	r := chi.NewRouter()
 	r.Use(api.NewCors(ctx.Config.CORS).EnableCors)
-	r.Mount("/", bootstrapSensors(ctx))
+	r.Mount("/sensor", bootstrapSensor(ctx))
+	r.Mount("/sensors", bootstrapSensors(ctx))
 	r.Mount("/user", bootstrapUsers(ctx))
 	r.Mount("/reports/types", bootstrapReportTypes(ctx))
+	return r
+}
+
+func bootstrapSensor(ctx context) chi.Router {
+	r := chi.NewRouter()
+	sensorRepo := mysql.NewSensorRepo(ctx.DB)
+	reportRepo := mysql.NewReportRepo(ctx.DB)
+
+	getByNameCase := temsys.NewGetSensorCase(sensorRepo)
+	sensorByNameHandler := api.GetSensorByNameHandler(getByNameCase)
+	r.Get("/{name}", sensorByNameHandler)
+	r.Options("/{name}", optionsHandler)
+
+	nowCase := temsys.NewSensorNowCase(sensorRepo)
+	// nowHandler := ctx.Auth.Authorize(api.SensorNowHandler(nowCase))
+	nowHandler := api.SensorNowHandler(nowCase)
+	r.Get("/{name}/now", nowHandler)
+	r.Options("/{name}/now", optionsHandler)
+
+	reportsBetweenDates := temsys.NewGetFilteredReports(ctx.Validator, reportRepo)
+	reportsBetweenDatesHandler := api.GetReportsBetweenDatesHandler(reportsBetweenDates)
+	r.Get("/{name}/reports", reportsBetweenDatesHandler)
+	r.Options("/{name}/reports", optionsHandler)
+
+	reportTypeRepo := mysql.NewReportTypeRepo(ctx.DB)
+	sensorBuilder := builders.NewHttpSensorBuilder()
+
+	saveSensor := temsys.NewSaveSensorCase(ctx.Validator, sensorRepo, ctx.Reporter, reportTypeRepo)
+	r.Post("/", ctx.Auth.Admin(api.SaveSensorHandler(saveSensor, sensorBuilder)))
+
+	deleteSensor := temsys.NewDeleteSensorCase(sensorRepo, ctx.Reporter)
+	r.Delete("/{name}", ctx.Auth.Admin(api.DeleteSensorByNameHandler(deleteSensor)))
+
+	updateSensor := temsys.NewUpdateSensorCase(ctx.Validator, sensorRepo, ctx.Reporter, reportTypeRepo)
+	r.Patch("/", ctx.Auth.Admin(api.UpdateSensorHandler(updateSensor, sensorBuilder)))
+
 	return r
 }
 
 func bootstrapSensors(ctx context) chi.Router {
 	r := chi.NewRouter()
 	sensorRepo := mysql.NewSensorRepo(ctx.DB)
-	reportRepo := mysql.NewReportRepo(ctx.DB)
 
 	getAllSensorsCase := temsys.NewGetAllSensorsCase(sensorRepo)
 	getAllHandler := api.GetAllSensorsHandler(getAllSensorsCase)
-	r.Get("/sensors", getAllHandler)
-	r.Options("/sensors", getAllHandler)
-
-	getByNameCase := temsys.NewGetSensorCase(sensorRepo)
-	sensorByNameHandler := api.GetSensorByNameHandler(getByNameCase)
-	r.Get("/sensor/{name}", sensorByNameHandler)
-	r.Options("/sensor/{name}", sensorByNameHandler)
-
-	nowCase := temsys.NewSensorNowCase(sensorRepo)
-	// nowHandler := ctx.Auth.Authorize(api.SensorNowHandler(nowCase))
-	nowHandler := api.SensorNowHandler(nowCase)
-	r.Get("/sensor/{name}/now", nowHandler)
-	r.Options("/sensor/{name}/now", nowHandler)
+	r.Get("/", getAllHandler)
+	r.Options("/", optionsHandler)
 
 	allAverage := temsys.NewAllSensorNowAverageCase(sensorRepo)
 	// allAverageHandler := ctx.Auth.Authorize(api.AllSensorsAverageHandler(allAverage))
 	allAverageHandler := api.AllSensorsAverageHandler(allAverage)
-	r.Get("/sensors/now/average", allAverageHandler)
-	r.Options("/sensors/now/average", allAverageHandler)
+	r.Get("/now/average", allAverageHandler)
+	r.Options("/now/average", optionsHandler)
 
-	reportsBetweenDates := temsys.NewGetFilteredReports(ctx.Validator, reportRepo)
-	reportsBetweenDatesHandler := api.GetReportsBetweenDatesHandler(reportsBetweenDates)
-	r.Get("/sensor/{name}/reports", reportsBetweenDatesHandler)
-	r.Options("/sensor/{name}/reports", reportsBetweenDatesHandler)
-
-	reportTypeRepo := mysql.NewReportTypeRepo(ctx.DB)
-	sensorBuilder := builders.NewHttpSensorBuilder()
-
-	saveSensor := temsys.NewSaveSensorCase(ctx.Validator, sensorRepo, ctx.Reporter, reportTypeRepo)
-	r.Post("/sensor", ctx.Auth.Admin(api.SaveSensorHandler(saveSensor, sensorBuilder)))
-
-	deleteSensor := temsys.NewDeleteSensorCase(sensorRepo, ctx.Reporter)
-	r.Delete("/sensor/{name}", ctx.Auth.Admin(api.DeleteSensorByNameHandler(deleteSensor)))
-
-	updateSensor := temsys.NewUpdateSensorCase(ctx.Validator, sensorRepo, ctx.Reporter, reportTypeRepo)
-	r.Patch("/sensor", ctx.Auth.Admin(api.UpdateSensorHandler(updateSensor, sensorBuilder)))
 	return r
 }
 
@@ -143,6 +158,7 @@ func bootstrapUsers(ctx context) chi.Router {
 	hasher := hash.BcryptPasswordHasher{}
 	loginCase := temsys.NewLoginCase(ctx.Validator, userRepo, hasher, ctx.Tokenizer)
 	r.Post("/login", api.LoginHandler(loginCase))
+	r.Options("/login", optionsHandler)
 	return r
 }
 

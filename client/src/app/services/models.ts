@@ -15,3 +15,16 @@ export type Report = {
   date: Date,
   value: number,
 }
+
+export type Token = {
+  value: string,
+  expires: Date,
+  owner: string,
+  role: string,
+}
+
+export type User = {
+  name: string,
+  role: string,
+  token: Token,
+}
