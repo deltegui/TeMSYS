@@ -94,3 +94,47 @@ func (login LoginCase) Exec(presenter Presenter, raw UseCaseRequest) {
 		Token: token,
 	})
 }
+
+type CreateUserRequest struct {
+	Name     string
+	Password string
+}
+
+type CreateUserResponse struct {
+	Name string
+	Role Role
+}
+
+// CreateUserCase handles the creation of a not admin user.
+type CreateUserCase struct {
+	userRepository UserRepository
+	hasher         PasswordHasher
+}
+
+// NewCreateUserCase creates a ready to go CreateUserCase.
+func NewCreateUserCase(val Validator, userRepo UserRepository, hasher PasswordHasher) UseCase {
+	return Validate(LoginCase{
+		userRepository: userRepo,
+		hasher:         hasher,
+	}, val)
+}
+
+// Exec the CreateUser use case. Expects the request to be already validated.
+func (create CreateUserCase) Exec(presenter Presenter, raw UseCaseRequest) {
+	req := raw.(CreateUserRequest)
+	if create.userRepository.ExistsWithName(req.Name) {
+		presenter.PresentError(UserAlreadyExitsErr)
+		return
+	}
+	hashed := create.hasher.Hash(req.Password)
+	user := User{
+		Name:     req.Name,
+		Password: hashed,
+		Role:     UserRole,
+	}
+	create.userRepository.Save(user)
+	presenter.Present(CreateUserResponse{
+		Name: req.Name,
+		Role: UserRole,
+	})
+}

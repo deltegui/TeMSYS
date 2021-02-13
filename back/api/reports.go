@@ -48,13 +48,28 @@ func GetReportsBetweenDatesHandler(getReportsByDate temsys.UseCase) http.Handler
 		average := readAverage(req)
 		trim := readTrim(req)
 		typ := readType(req)
-		getReportsByDate.Exec(presenter, temsys.FilteredReportsRequest{
-			From:       from,
-			To:         to,
+		getReportsByDate.Exec(presenter, temsys.FilteredReportsBySensorRequest{
+			FilteredReportsRequest: temsys.FilteredReportsRequest{
+				From: from,
+				To:   to,
+				Trim: trim,
+			},
 			Average:    average,
-			Trim:       trim,
-			Type:       typ,
 			SensorName: name,
+			Type:       typ,
+		})
+	}
+}
+
+func GetAllAverageReportsBetweenDatesHandler(getReportsByDate temsys.UseCase) http.HandlerFunc {
+	return func(w http.ResponseWriter, req *http.Request) {
+		presenter := phoenix.NewJSONPresenter(w)
+		from, to := readFromTo(req)
+		trim := readTrim(req)
+		getReportsByDate.Exec(presenter, temsys.FilteredReportsRequest{
+			From: from,
+			To:   to,
+			Trim: trim,
 		})
 	}
 }

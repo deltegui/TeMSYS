@@ -36,9 +36,11 @@ import TokenRepository from '@/impl/tokenstorage';
 import ApiUserRepository from '@/impl/api/user.repo';
 import UserService from '@/services/user.service';
 
+const tokenRepo = new TokenRepository();
+
 const userService = new UserService(
   new ApiUserRepository(),
-  new TokenRepository(),
+  tokenRepo,
 );
 
 export default defineComponent({
@@ -49,6 +51,11 @@ export default defineComponent({
       password: '',
       loginErr: '',
     };
+  },
+  mounted() {
+    if (tokenRepo.load()) {
+      this.$router.push('/panel');
+    }
   },
   methods: {
     onLogin() {

@@ -20,12 +20,6 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-var optionsHandler http.HandlerFunc = func(w http.ResponseWriter, req *http.Request) {
-	// Response CORS headers without content. Prevents CORS preflight
-	// error in Firefox.
-	w.WriteHeader(http.StatusNoContent)
-}
-
 type context struct {
 	Config    configuration.Configuration
 	DB        *sqlx.DB
@@ -91,10 +85,12 @@ func mountRoutes(r chi.Router, ctx context) {
 func boostrapAPI(ctx context) chi.Router {
 	r := chi.NewRouter()
 	r.Use(api.NewCors(ctx.Config.CORS).EnableCors)
+	r.Use(api.OptionsCors)
 	r.Mount("/sensor", bootstrapSensor(ctx))
 	r.Mount("/sensors", bootstrapSensors(ctx))
 	r.Mount("/user", bootstrapUsers(ctx))
 	r.Mount("/reports/types", bootstrapReportTypes(ctx))
+	r.Mount("/reports", bootstrapReport(ctx))
 	return r
 }
 
@@ -106,18 +102,14 @@ func bootstrapSensor(ctx context) chi.Router {
 	getByNameCase := temsys.NewGetSensorCase(sensorRepo)
 	sensorByNameHandler := api.GetSensorByNameHandler(getByNameCase)
 	r.Get("/{name}", sensorByNameHandler)
-	r.Options("/{name}", optionsHandler)
 
 	nowCase := temsys.NewSensorNowCase(sensorRepo)
-	// nowHandler := ctx.Auth.Authorize(api.SensorNowHandler(nowCase))
-	nowHandler := api.SensorNowHandler(nowCase)
+	nowHandler := ctx.Auth.Authorize(api.SensorNowHandler(nowCase))
 	r.Get("/{name}/now", nowHandler)
-	r.Options("/{name}/now", optionsHandler)
 
-	reportsBetweenDates := temsys.NewGetFilteredReports(ctx.Validator, reportRepo)
+	reportsBetweenDates := temsys.NewGetFilteredReportsBySensor(ctx.Validator, reportRepo)
 	reportsBetweenDatesHandler := api.GetReportsBetweenDatesHandler(reportsBetweenDates)
 	r.Get("/{name}/reports", reportsBetweenDatesHandler)
-	r.Options("/{name}/reports", optionsHandler)
 
 	reportTypeRepo := mysql.NewReportTypeRepo(ctx.DB)
 	sensorBuilder := builders.NewHttpSensorBuilder()
@@ -141,13 +133,10 @@ func bootstrapSensors(ctx context) chi.Router {
 	getAllSensorsCase := temsys.NewGetAllSensorsCase(sensorRepo)
 	getAllHandler := api.GetAllSensorsHandler(getAllSensorsCase)
 	r.Get("/", getAllHandler)
-	r.Options("/", optionsHandler)
 
 	allAverage := temsys.NewAllSensorNowAverageCase(sensorRepo)
-	// allAverageHandler := ctx.Auth.Authorize(api.AllSensorsAverageHandler(allAverage))
-	allAverageHandler := api.AllSensorsAverageHandler(allAverage)
+	allAverageHandler := ctx.Auth.Authorize(api.AllSensorsAverageHandler(allAverage))
 	r.Get("/now/average", allAverageHandler)
-	r.Options("/now/average", optionsHandler)
 
 	return r
 }
@@ -156,9 +145,13 @@ func bootstrapUsers(ctx context) chi.Router {
 	r := chi.NewRouter()
 	userRepo := mysql.NewUserRepo(ctx.DB)
 	hasher := hash.BcryptPasswordHasher{}
+
 	loginCase := temsys.NewLoginCase(ctx.Validator, userRepo, hasher, ctx.Tokenizer)
 	r.Post("/login", api.LoginHandler(loginCase))
-	r.Options("/login", optionsHandler)
+
+	createUserCase := temsys.NewCreateUserCase(ctx.Validator, userRepo, hasher)
+	r.Post("/create", ctx.Auth.Admin(api.CreateUserHandler(createUserCase)))
+
 	return r
 }
 
@@ -167,5 +160,13 @@ func bootstrapReportTypes(ctx context) chi.Router {
 	reportTypeRepo := mysql.NewReportTypeRepo(ctx.DB)
 	r.Get("/", api.GetReportTypesHandler(reportTypeRepo))
 	r.Post("/{name}", ctx.Auth.Admin(api.SaveReportTypeHandler(reportTypeRepo)))
+	return r
+}
+
+func bootstrapReport(ctx context) chi.Router {
+	r := chi.NewRouter()
+	reportRepo := mysql.NewReportRepo(ctx.DB)
+	filteredAverage := temsys.NewGetFilteredAverageReports(ctx.Validator, reportRepo)
+	r.Get("/average", api.GetAllAverageReportsBetweenDatesHandler(filteredAverage))
 	return r
 }

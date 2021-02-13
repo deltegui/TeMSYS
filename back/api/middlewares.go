@@ -33,6 +33,19 @@ func (cors Cors) EnableCors(next http.Handler) http.Handler {
 	})
 }
 
+// OptionsCors creates a middleware that handles all request using
+// Options method and returns 204. This is used to return all
+// CORS headers.
+func OptionsCors(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		if req.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+		next.ServeHTTP(w, req)
+	})
+}
+
 // JWTAuth middleware to check using a JWT Bearer token if user is authorized or is admin.
 type JWTAuth struct {
 	tokenizer temsys.Tokenizer

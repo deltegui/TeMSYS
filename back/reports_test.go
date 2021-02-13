@@ -23,10 +23,12 @@ func (repo fakeReportTypeRepo) GetAll() []string {
 }
 
 type fakeReportRepo struct {
-	saveInput     temsys.Report
-	getAllReturn  []temsys.Report
-	filteredInput temsys.ReportFilter
-	getFiltered   []temsys.Report
+	saveInput            temsys.Report
+	getAllReturn         []temsys.Report
+	filteredInput        temsys.ReportFilter
+	getFiltered          []temsys.Report
+	filteredAverageInput temsys.ReportFilter
+	getFilteredAverage   []temsys.Report
 }
 
 func (repo *fakeReportRepo) Save(r temsys.Report) {
@@ -40,6 +42,11 @@ func (repo fakeReportRepo) GetAll() []temsys.Report {
 func (repo *fakeReportRepo) GetFiltered(filter temsys.ReportFilter) []temsys.Report {
 	repo.filteredInput = filter
 	return repo.getFiltered
+}
+
+func (repo *fakeReportRepo) GetFilteredAverage(filter temsys.ReportFilter) []temsys.Report {
+	repo.filteredAverageInput = filter
+	return repo.getFilteredAverage
 }
 
 type fakeReportScheduler struct{}
@@ -71,11 +78,13 @@ func TestGetFilteredReportsCase(t *testing.T) {
 		Type:       "temperature",
 		SensorName: "habitacion",
 	}
-	caseReq := temsys.FilteredReportsRequest{
-		From:       timeParseOrPanic("2020-01-02T01:01:01Z"),
-		To:         timeParseOrPanic("2020-01-03T01:01:01Z"),
+	caseReq := temsys.FilteredReportsBySensorRequest{
+		FilteredReportsRequest: temsys.FilteredReportsRequest{
+			From: timeParseOrPanic("2020-01-02T01:01:01Z"),
+			To:   timeParseOrPanic("2020-01-03T01:01:01Z"),
+			Trim: 10,
+		},
 		Average:    false,
-		Trim:       10,
 		Type:       "temperature",
 		SensorName: "habitacion",
 	}
@@ -93,7 +102,7 @@ func TestGetFilteredReportsCase(t *testing.T) {
 		reportRepo := fakeReportRepo{
 			getFiltered: expectedResult,
 		}
-		filteredCase := temsys.NewGetFilteredReports(testu.AlwaysValidValidator{}, &reportRepo)
+		filteredCase := temsys.NewGetFilteredReportsBySensor(testu.AlwaysValidValidator{}, &reportRepo)
 		filteredCase.Exec(&presenter, caseReq)
 		res := presenter.Data.([]temsys.Report)
 		testu.Equals(t, expectedFilter, reportRepo.filteredInput)
@@ -145,7 +154,7 @@ func TestGetFilteredReportsCase(t *testing.T) {
 		reportRepo := fakeReportRepo{
 			getFiltered: reports,
 		}
-		filteredCase := temsys.NewGetFilteredReports(testu.AlwaysValidValidator{}, &reportRepo)
+		filteredCase := temsys.NewGetFilteredReportsBySensor(testu.AlwaysValidValidator{}, &reportRepo)
 		averageReq := caseReq
 		averageReq.Average = true
 		filteredCase.Exec(&presenter, averageReq)

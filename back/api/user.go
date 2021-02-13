@@ -19,3 +19,15 @@ func LoginHandler(loginCase temsys.UseCase) http.HandlerFunc {
 		loginCase.Exec(presenter, loginReq)
 	}
 }
+
+func CreateUserHandler(createUserCase temsys.UseCase) http.HandlerFunc {
+	return func(w http.ResponseWriter, req *http.Request) {
+		presenter := phoenix.NewJSONPresenter(w)
+		var userReq temsys.CreateUserRequest
+		if err := json.NewDecoder(req.Body).Decode(&userReq); err != nil {
+			presenter.PresentError(temsys.MalformedRequestErr)
+			return
+		}
+		createUserCase.Exec(presenter, userReq)
+	}
+}

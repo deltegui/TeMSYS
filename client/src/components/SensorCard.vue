@@ -19,9 +19,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { Report } from '@/services/models';
+import ApiReportRepository from '@/impl/api/report.repo';
 import ApiSensorRepository from '@/impl/api/sensor.repo';
+import ReportService from '@/services/report.service';
 
-const sensorRepo = new ApiSensorRepository();
+const reportService = new ReportService(
+  new ApiReportRepository(),
+  new ApiSensorRepository(),
+);
 
 export default defineComponent({
   name: 'SensorCard',
@@ -43,7 +48,7 @@ export default defineComponent({
     };
   },
   mounted() {
-    sensorRepo.getCurrentStateByName(this.name)
+    reportService.getLastReadForSensor(this.name)
       .then((reports: Report[]) => reports.forEach((report) => {
         this.enabled = true;
         if (report.type === 'temperature') {

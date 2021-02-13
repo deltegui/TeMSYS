@@ -21,8 +21,9 @@ var (
 
 // Users errors
 var (
-	UserNotFoundErr    = UseCaseError{Code: 100, Reason: "User not found"}
-	InvalidPasswordErr = UseCaseError{Code: 101, Reason: "Invalid password"}
+	UserNotFoundErr     = UseCaseError{Code: 100, Reason: "User not found"}
+	InvalidPasswordErr  = UseCaseError{Code: 101, Reason: "Invalid password"}
+	UserAlreadyExitsErr = UseCaseError{Code: 102, Reason: "User already exits"}
 )
 
 // Token errors

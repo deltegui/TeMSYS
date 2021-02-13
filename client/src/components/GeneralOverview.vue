@@ -8,9 +8,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { Report } from '@/services/models';
+import ApiReportRepository from '@/impl/api/report.repo';
 import ApiSensorRepository from '@/impl/api/sensor.repo';
+import ReportService from '@/services/report.service';
 
-const sensorRepo = new ApiSensorRepository();
+const reportService = new ReportService(
+  new ApiReportRepository(),
+  new ApiSensorRepository(),
+);
 
 function getCurrentSeasonName(): string {
   const now = new Date();
@@ -49,7 +54,7 @@ export default defineComponent({
   },
   mounted() {
     setSeasonImage();
-    sensorRepo.getCurrentAverageState()
+    reportService.getLastReadAverage()
       .then((reports: Report[]) => reports.forEach((report) => {
         if (report.type === 'temperature') {
           this.temperature = report.value;

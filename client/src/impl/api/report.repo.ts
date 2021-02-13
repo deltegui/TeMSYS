@@ -24,53 +24,56 @@ export default class ApiReportRepository implements ReportRepository {
       .then(passReportsToRealDate);
   }
 
-  async getByDateRange(
+  async getFiltered(
     {
       name,
+      type,
+      trim,
       fromDate,
       toDate,
       average,
     }:
     {
       name: string;
-      fromDate: Date;
-      toDate: Date;
-      average: boolean;
+      type?: string;
+      trim?: number;
+      fromDate?: Date;
+      toDate?: Date;
+      average?: boolean;
     },
   ): Promise<Report[]> {
-    return makeRequest(`/sensor/${name}/reports?from=${fromDate}&to=${toDate}&average=${average}`)
+    let baseQuery = `/sensor/${name}/reports?`;
+    if (fromDate && toDate) {
+      baseQuery += `from=${fromDate.toJSON()}&to=${toDate.toJSON()}&`;
+    }
+    if (trim) {
+      baseQuery += `trim=${trim}&`;
+    }
+    if (average) {
+      baseQuery += `average${average}&`;
+    }
+    if (type) {
+      baseQuery += `type${type}&`;
+    }
+    return makeRequest(baseQuery)
       .then(passReportsToRealDate);
   }
 
-  async getLatestReports(
+  async getAllReportsAverage(
     {
-      name,
-      trim,
-      type,
+      from,
+      to,
     }:
     {
-      name: string;
-      trim: number;
-      type: string;
+      from: Date;
+      to: Date;
     },
   ): Promise<Report[]> {
-    return makeRequest(`/sensor/${name}/reports?trim=${trim}&type=${type}`)
-      .then(passReportsToRealDate);
-  }
-
-  async getByDate(
-    {
-      name,
-      date,
-      average,
-    }:
-    {
-      name: string;
-      date: Date;
-      average: boolean;
-    },
-  ): Promise<Report[]> {
-    return makeRequest(`/sensor/${name}/reports?from=${date}&to=${date}&average=${average}`)
+    let baseQuery = '/reports/average';
+    if (from && to) {
+      baseQuery += `?from=${from.toJSON()}&to=${to.toJSON()}`;
+    }
+    return makeRequest(baseQuery)
       .then(passReportsToRealDate);
   }
 }

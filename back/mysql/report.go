@@ -92,3 +92,18 @@ func (repo SqlxReportRepo) GetFiltered(filter temsys.ReportFilter) []temsys.Repo
 	}
 	return reports
 }
+
+// GetFilteredAverage let you get all reports average using filters.
+func (repo SqlxReportRepo) GetFilteredAverage(filter temsys.ReportFilter) []temsys.Report {
+	dateFormat := "2006-01-02 15:04:05"
+	var reports []temsys.Report
+	query := "select 'average' as sensor, r.type, avg(r.value) as value, now() as report_date from reports as r, sensors as s where report_date > ? and report_date < ? and s.name like r.sensor and s.deleted = 0 group by type order by r.report_date desc limit ?"
+	err := repo.db.Select(&reports, query, filter.From.UTC().Format(dateFormat), filter.To.UTC().Format(dateFormat), filter.Trim)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if reports == nil {
+		return []temsys.Report{}
+	}
+	return reports
+}

@@ -12,8 +12,11 @@ export default class LocalStorageTokenRepository implements TokenRepository {
     this.storage.setItem('token', JSON.stringify(token));
   }
 
-  load(): Token {
+  load(): Token | null {
     const value = this.storage.getItem('token');
-    return JSON.parse(value ?? '');
+    if (!value) {
+      return null;
+    }
+    return JSON.parse(value);
   }
 }

@@ -41,6 +41,7 @@ type ReportRepo interface {
 	Save(Report)
 	GetAll() []Report
 	GetFiltered(filter ReportFilter) []Report
+	GetFilteredAverage(filter ReportFilter) []Report
 }
 
 // ScheluderJob is a job to be done by the ReportScheluder.
@@ -55,33 +56,38 @@ type ReportScheluder interface {
 	Stop()
 }
 
-// FilteredReportsRequest is the request for GetReportByDatesCase.
+// FilteredReportsRequest is the request for GetFilteredReportsBySensor.
 // Stores a date range of the reports that you want
 type FilteredReportsRequest struct {
-	From       time.Time `json:"from"`
-	To         time.Time `json:"to"`
-	Average    bool      `json:"average"`
-	Trim       int       `json:"trim"`
-	Type       string    `json:"type"`
-	SensorName string    `json:"sensor"`
+	From time.Time `json:"from"`
+	To   time.Time `json:"to"`
+	Trim int       `json:"trim"`
 }
 
-// GetFilteredReports get all reports generated between two dates.
-type GetFilteredReports struct {
+// FilteredReportsBySensorRequest is the request
+type FilteredReportsBySensorRequest struct {
+	FilteredReportsRequest
+	Average    bool   `json:"average"`
+	Type       string `json:"type"`
+	SensorName string `json:"sensor"`
+}
+
+// GetFilteredReportsBySensor get all reports generated between two dates.
+type GetFilteredReportsBySensor struct {
 	reportRepo ReportRepo
 }
 
-// NewGetFilteredReports creates new GetReportsByDates use case with validation
-func NewGetFilteredReports(validator Validator, reportRepo ReportRepo) UseCase {
+// NewGetFilteredReportsBySensor creates new GetReportsByDates use case with validation
+func NewGetFilteredReportsBySensor(validator Validator, reportRepo ReportRepo) UseCase {
 	return Validate(
-		GetFilteredReports{reportRepo},
+		GetFilteredReportsBySensor{reportRepo},
 		validator,
 	)
 }
 
-// Exec GetFilteredReports
-func (useCase GetFilteredReports) Exec(presenter Presenter, req UseCaseRequest) {
-	datesReq := req.(FilteredReportsRequest)
+// Exec GetFilteredReportsBySensor
+func (useCase GetFilteredReportsBySensor) Exec(presenter Presenter, req UseCaseRequest) {
+	datesReq := req.(FilteredReportsBySensorRequest)
 	result := useCase.reportRepo.GetFiltered(ReportFilter{
 		From:       datesReq.From,
 		To:         datesReq.To,
@@ -92,6 +98,29 @@ func (useCase GetFilteredReports) Exec(presenter Presenter, req UseCaseRequest) 
 	if datesReq.Average {
 		result = calculateAverages(result)
 	}
+	presenter.Present(result)
+}
+
+// GetFilteredAverageReports returns
+type GetFilteredAverageReports struct {
+	reportRepo ReportRepo
+}
+
+func NewGetFilteredAverageReports(validator Validator, reportRepo ReportRepo) UseCase {
+	return Validate(
+		GetFilteredAverageReports{reportRepo},
+		validator,
+	)
+}
+
+// Exec GetFilteredAverageReports
+func (useCase GetFilteredAverageReports) Exec(presenter Presenter, req UseCaseRequest) {
+	datesReq := req.(FilteredReportsRequest)
+	result := useCase.reportRepo.GetFilteredAverage(ReportFilter{
+		From: datesReq.From,
+		To:   datesReq.To,
+		Trim: datesReq.Trim,
+	})
 	presenter.Present(result)
 }
 

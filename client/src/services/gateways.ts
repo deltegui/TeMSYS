@@ -5,24 +5,33 @@ import {
 } from '@/services/models';
 
 export interface SensorRepository {
-  getAll(): Promise<Sensor[]>
-  getByName(name: string): Promise<Sensor>
-  getCurrentStateByName(name: string): Promise<Report[]>
-  getCurrentAverageState(): Promise<Report[]>
+  getAll(): Promise<Sensor[]>;
+  getByName(name: string): Promise<Sensor>;
+  getCurrentStateByName(name: string): Promise<Report[]>;
+  getCurrentAverageState(): Promise<Report[]>;
 }
 
 export interface ReportRepository {
-  getAll(name: string): Promise<Report[]>
-  getByDateRange(range: { name: string, fromDate: Date, toDate: Date, average: boolean }): Promise<Report[]>
-  getLatestReports(info: { name: string, trim: number, type: string }): Promise<Report[]>
-  getByDate(info: { name: string, date: Date, average: boolean }): Promise<Report[]>
+  getAll(name: string): Promise<Report[]>;
+  getFiltered(options: {
+    name: string;
+    type?: string;
+    trim?: number;
+    fromDate?: Date;
+    toDate?: Date;
+    average?: boolean;
+  }): Promise<Report[]>;
+  getAllReportsAverage(options: {
+    from: Date;
+    to: Date;
+  }): Promise<Report[]>;
 }
 
 export interface UserRepository {
-  login(data: { name: string, password: string }): Promise<Token>,
+  login(data: { name: string; password: string }): Promise<Token>;
 }
 
 export interface TokenRepository {
   save(token: Token): void;
-  load(): Token;
+  load(): Token | null;
 }
