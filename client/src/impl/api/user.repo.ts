@@ -12,7 +12,7 @@ import makeRequest from './core';
 
 export default class ApiUserRepository implements UserRepository {
   async login(body: { name: string; password: string }): Promise<Token> {
-    return makeRequest('/user/login', body, 'POST')
+    return makeRequest('/user/login', { body, method: 'POST' })
       .then(({ token }) => ({
         value: token.value,
         expires: token.expires,

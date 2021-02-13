@@ -20,11 +20,11 @@ export default class ApiSensorRepository implements SensorRepository {
     return makeRequest(`/sensor/${name}`);
   }
 
-  async getCurrentStateByName(name: string): Promise<Report[]> {
-    return makeRequest(`/sensor/${name}/now`);
+  async getCurrentStateByName(name: string, token: string): Promise<Report[]> {
+    return makeRequest(`/sensor/${name}/now`, { method: 'GET', token });
   }
 
-  async getCurrentAverageState(): Promise<Report[]> {
-    return makeRequest('/sensors/now/average');
+  async getCurrentAverageState(token: string): Promise<Report[]> {
+    return makeRequest('/sensors/now/average', { method: 'GET', token });
   }
 }

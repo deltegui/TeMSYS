@@ -4,7 +4,10 @@
       <span v-bind:class="enabled ? 'sensor-enabled' : 'sensor-disabled'"></span>
       <h1>{{ name }}</h1>
     </aside>
-    <main>
+    <main v-if="loading">
+      <LoadingRoller />
+    </main>
+    <main v-else>
       <div v-if="enabled">
         <h1>{{ temperature }}ºC</h1>
         <h2 v-if="!!humidity">Humedad: {{ humidity }}%</h2>
@@ -19,17 +22,15 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { Report } from '@/services/models';
-import ApiReportRepository from '@/impl/api/report.repo';
-import ApiSensorRepository from '@/impl/api/sensor.repo';
-import ReportService from '@/services/report.service';
-
-const reportService = new ReportService(
-  new ApiReportRepository(),
-  new ApiSensorRepository(),
-);
+import { sensorService } from '@/services';
+import { State, useState } from '@/store';
+import LoadingRoller from './LoadingRoller.vue';
 
 export default defineComponent({
   name: 'SensorCard',
+  components: {
+    LoadingRoller,
+  },
   props: {
     name: {
       type: String,
@@ -40,16 +41,25 @@ export default defineComponent({
     temperature: number | null;
     humidity: number | null;
     enabled: boolean;
+    loading: boolean;
+    store?: State;
     } {
     return {
       temperature: null,
       humidity: null,
       enabled: false,
+      loading: true,
+      store: useState(),
     };
   },
   mounted() {
-    reportService.getLastReadForSensor(this.name)
+    const timeout = setTimeout(() => {
+      this.loading = false;
+    }, 4000);
+    sensorService.readState(this.name, this.store?.state.token?.value ?? '')
       .then((reports: Report[]) => reports.forEach((report) => {
+        clearTimeout(timeout);
+        this.loading = false;
         this.enabled = true;
         if (report.type === 'temperature') {
           this.temperature = report.value;

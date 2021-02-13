@@ -8,18 +8,26 @@ function isApiError(err: any): boolean {
 
 export default async function makeRequest(
   endpoint: string,
-  body: any = undefined,
-  method = 'GET',
+  options: {
+    body?: any;
+    method: string;
+    token?: string;
+  } = {
+    body: undefined,
+    method: 'GET',
+    token: undefined,
+  },
 ): Promise<any> {
-  let reqConfig;
-  if (body) {
-    reqConfig = {
-      method,
-      body: JSON.stringify(body),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
+  const reqConfig: any = {
+    method: options.method,
+    headers: {},
+  };
+  if (options.body) {
+    reqConfig.body = JSON.stringify(options.body);
+    reqConfig.headers['Content-Type'] = 'application/json';
+  }
+  if (options.token) {
+    reqConfig.headers.Authorization = `Bearer ${options.token}`;
   }
   return fetch(`${apiURL}${endpoint}`, reqConfig)
     .then(async (res) => {

@@ -2,6 +2,7 @@ package temsys
 
 import (
 	"log"
+	"math"
 	"time"
 )
 
@@ -56,6 +57,12 @@ type ReportScheluder interface {
 	Stop()
 }
 
+// Pass report values (that can have soooo many decimals)
+// to float32 with only two decimals.
+func roundReportValue(value float64) float32 {
+	return float32(math.Round(value*100) / 100)
+}
+
 // FilteredReportsRequest is the request for GetFilteredReportsBySensor.
 // Stores a date range of the reports that you want
 type FilteredReportsRequest struct {
@@ -106,6 +113,7 @@ type GetFilteredAverageReports struct {
 	reportRepo ReportRepo
 }
 
+// NewGetFilteredAverageReports creates a ready to go GetFilteredAverageReports
 func NewGetFilteredAverageReports(validator Validator, reportRepo ReportRepo) UseCase {
 	return Validate(
 		GetFilteredAverageReports{reportRepo},
@@ -116,12 +124,15 @@ func NewGetFilteredAverageReports(validator Validator, reportRepo ReportRepo) Us
 // Exec GetFilteredAverageReports
 func (useCase GetFilteredAverageReports) Exec(presenter Presenter, req UseCaseRequest) {
 	datesReq := req.(FilteredReportsRequest)
-	result := useCase.reportRepo.GetFilteredAverage(ReportFilter{
+	reports := useCase.reportRepo.GetFilteredAverage(ReportFilter{
 		From: datesReq.From,
 		To:   datesReq.To,
 		Trim: datesReq.Trim,
 	})
-	presenter.Present(result)
+	for i := range reports {
+		reports[i].Value = roundReportValue(float64(reports[i].Value))
+	}
+	presenter.Present(reports)
 }
 
 func newReportReaderSchedulerJob(sensor Sensor, reportRepo ReportRepo) ScheluderJob {

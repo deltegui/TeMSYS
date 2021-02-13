@@ -31,17 +31,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-
-import TokenRepository from '@/impl/tokenstorage';
-import ApiUserRepository from '@/impl/api/user.repo';
-import UserService from '@/services/user.service';
-
-const tokenRepo = new TokenRepository();
-
-const userService = new UserService(
-  new ApiUserRepository(),
-  tokenRepo,
-);
+import { userService } from '@/services';
+import { useState } from '@/store';
 
 export default defineComponent({
   name: 'Login',
@@ -50,20 +41,28 @@ export default defineComponent({
       username: '',
       password: '',
       loginErr: '',
+      store: useState(),
     };
   },
+  /*
   mounted() {
-    if (tokenRepo.load()) {
+    if (this.store?.state.token) {
       this.$router.push('/panel');
     }
   },
+  */
   methods: {
     onLogin() {
       this.loginErr = '';
       userService.login({
         name: this.username,
         password: this.password,
-      }).then(() => this.$router.push('/panel'))
+      })
+        .then((token) => {
+          this.$router.push('/panel');
+          if (!this.store) return;
+          this.store.setToken(token);
+        })
         .catch((err) => {
           this.loginErr = err.reason;
         });

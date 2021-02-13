@@ -7,8 +7,8 @@ import {
 export interface SensorRepository {
   getAll(): Promise<Sensor[]>;
   getByName(name: string): Promise<Sensor>;
-  getCurrentStateByName(name: string): Promise<Report[]>;
-  getCurrentAverageState(): Promise<Report[]>;
+  getCurrentStateByName(name: string, token: string): Promise<Report[]>;
+  getCurrentAverageState(token: string): Promise<Report[]>;
 }
 
 export interface ReportRepository {
@@ -33,5 +33,6 @@ export interface UserRepository {
 
 export interface TokenRepository {
   save(token: Token): void;
-  load(): Token | null;
+  load(): Token | undefined;
+  clear(): void;
 }

@@ -4,7 +4,7 @@ Primero instala las dependencias y software necesario:
 * Necesitas tener instalado Golang y bien configurado
 * Necesitas tener MySQL 8 o MariaDB 10
 
-Hecho esto tienes que copiar el fichero 'dev.example.json' a 'dev.json' y configurarlo como necesites. Si estas en un entorno de produccion puede que quieras que el servidor use HTTPS. para ello debes habilitarlo en la configuración y generar las claves usando el script create_keys.sh que se encuentra en la raiz del proyecto.
+Hecho esto tienes que copiar el fichero 'dev.example.json' a 'dev.json' y configurarlo como necesites. Si estas en un entorno de produccion puede que quieras que el servidor use HTTPS. para ello debes habilitarlo en la configuración y generar las claves usando el script create_keys.sh que se encuentra en la raiz del proyecto. También es recomendable en el caso de estar en producción, en usar variables de entorno o pasar los parámetros por terminal en vez de usar 'dev.json', que esta pensado más bien para desarrollo.
 
 Hecho esto debes configurar la base de datos. Para ello carga el fichero sql llamado 'db.sql' que se encuentra en la raiz del proyecto en MySQL.
 

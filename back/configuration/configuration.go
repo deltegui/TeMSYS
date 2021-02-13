@@ -17,7 +17,7 @@ type Configuration struct {
 }
 
 // Load from dev.json file and overwrite
-// default values if console params are provided
+// default values if console or env params are provided
 func Load() Configuration {
 	return *configloader.NewConfigLoaderFor(&Configuration{}).
 		AddHook(configloader.CreateFileHook("./dev.json")).

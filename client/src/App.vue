@@ -4,14 +4,48 @@
   <div id="container">
     <nav id="menu">
       <img src="@/assets/logo.png" />
+      <div v-if="!!store.state.token">
+        <h2>{{store.state.token.owner}}</h2>
+        <p>{{store.state.token.role}}</p>
+      </div>
       <router-link to="/">Overview</router-link>
-      <router-link to="/login">Login</router-link>
+      <router-link v-if="!!store.state.token" to="/panel">Panel</router-link>
+      <a v-if="!!store.state.token" v-on:click="onLogout">Logout</a>
+      <router-link v-else to="/login">Login</router-link>
     </nav>
     <main>
       <router-view />
     </main>
   </div>
 </template>
+
+<script lang="ts">
+import { defineComponent } from 'vue';
+import { useState } from '@/store';
+import { userService } from './services';
+
+export default defineComponent({
+  data() {
+    return {
+      store: useState(),
+    };
+  },
+  mounted() {
+    console.log(this.store?.state.token);
+  },
+  methods: {
+    onLogout() {
+      if (!this.store) return;
+      this.store.deleteToken();
+      userService.logout();
+    },
+
+    role() {
+      return this.store?.state.token?.role;
+    },
+  },
+});
+</script>
 
 <style scoped>
 #container {

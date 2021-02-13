@@ -1,5 +1,6 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable no-param-reassign */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import {
   Report,

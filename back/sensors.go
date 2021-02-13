@@ -2,7 +2,6 @@ package temsys
 
 import (
 	"log"
-	"math"
 	"time"
 )
 
@@ -402,7 +401,7 @@ func createReportsWithAverages(sum map[string]*sumReport) []Report {
 			ReportType: key,
 			SensorName: "average",
 			Date:       time.Now(),
-			Value:      float32(math.Round(average*100) / 100),
+			Value:      roundReportValue(average),
 		})
 	}
 	return finalReports

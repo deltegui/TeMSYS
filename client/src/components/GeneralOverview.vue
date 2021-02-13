@@ -8,14 +8,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { Report } from '@/services/models';
-import ApiReportRepository from '@/impl/api/report.repo';
-import ApiSensorRepository from '@/impl/api/sensor.repo';
-import ReportService from '@/services/report.service';
-
-const reportService = new ReportService(
-  new ApiReportRepository(),
-  new ApiSensorRepository(),
-);
+import { reportService } from '@/services';
 
 function getCurrentSeasonName(): string {
   const now = new Date();

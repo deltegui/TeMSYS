@@ -95,11 +95,13 @@ func (login LoginCase) Exec(presenter Presenter, raw UseCaseRequest) {
 	})
 }
 
+// CreateUserRequest stores all data needed by CreateUserCase.
 type CreateUserRequest struct {
 	Name     string
 	Password string
 }
 
+// CreateUserResponse is the response returned by CreateUserCase.
 type CreateUserResponse struct {
 	Name string
 	Role Role

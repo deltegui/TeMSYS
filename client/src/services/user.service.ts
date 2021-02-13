@@ -1,10 +1,11 @@
 /* eslint-disable no-useless-constructor */
-
+import {
+  State,
+} from '@/store';
 import {
   UserRepository,
   TokenRepository,
 } from './gateways';
-
 import {
   Token,
 } from './models';
@@ -23,5 +24,9 @@ export default class UserService {
       this.tokenRepo.save(token);
       return token;
     });
+  }
+
+  logout(): void {
+    this.tokenRepo.clear();
   }
 }
