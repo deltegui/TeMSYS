@@ -12,6 +12,7 @@
       <span v-if="!!store.token">
         <div v-if="store.token.role === 'admin'">
           <router-link to="/useradmin">User Admin</router-link>
+          <router-link to="/sensoradmin">Sensor Admin</router-link>
         </div>
       </span>
       <router-link v-if="!!store.token" to="/panel">Panel</router-link>
@@ -233,5 +234,9 @@ h1 {
 
 .temsys-green {
   --main-color: var(--fg-green-color);
+}
+
+.temsys-gray {
+  --main-color: var(--bg-alternative-color);
 }
 </style>

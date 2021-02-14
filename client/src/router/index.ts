@@ -3,6 +3,7 @@ import Overview from '../views/Overview.vue';
 import Login from '../views/Login.vue';
 import Panel from '../views/Panel.vue';
 import UserAdmin from '../views/UserAdmin.vue';
+import SensorAdmin from '../views/SensorAdmin.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -24,6 +25,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/useradmin',
     name: 'UserAdmin',
     component: UserAdmin,
+  },
+  {
+    path: '/sensoradmin',
+    name: 'SensorAdmin',
+    component: SensorAdmin,
   },
 ];
 

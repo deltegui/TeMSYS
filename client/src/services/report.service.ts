@@ -36,4 +36,8 @@ export default class ReportService {
         trim,
       }));
   }
+
+  async getAllReportTypes(): Promise<string[]> {
+    return this.reportRepo.getAllReportTypes();
+  }
 }

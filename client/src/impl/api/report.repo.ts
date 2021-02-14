@@ -77,4 +77,8 @@ export default class ApiReportRepository implements ReportRepository {
     return makeRequest(baseQuery)
       .then(passReportsToRealDate);
   }
+
+  async getAllReportTypes(): Promise<string[]> {
+    return makeRequest('/reports/types');
+  }
 }

@@ -6,10 +6,13 @@ import {
 } from '@/services/models';
 
 export interface SensorRepository {
-  getAll(): Promise<Sensor[]>;
+  getAll(deleted: boolean): Promise<Sensor[]>;
   getByName(name: string): Promise<Sensor>;
   getCurrentStateByName(name: string, token: string): Promise<Report[]>;
   getCurrentAverageState(token: string): Promise<Report[]>;
+  updateSensor(sensor: Sensor, token: string): Promise<Sensor>;
+  delete(name: string, token: string): Promise<void>;
+  create(sensor: Sensor, token: string): Promise<Sensor>;
 }
 
 export interface ReportRepository {
@@ -26,6 +29,7 @@ export interface ReportRepository {
     from: Date;
     to: Date;
   }): Promise<Report[]>;
+  getAllReportTypes(): Promise<string[]>;
 }
 
 export interface UserRepository {

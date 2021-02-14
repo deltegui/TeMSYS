@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h1>User Administration</h1>
+    <h1>User Admin</h1>
     <CreateUser />
     <h2>User list</h2>
     <DeleteUser v-for="user in users" v-bind:key="user.name" :name="user.name"/>

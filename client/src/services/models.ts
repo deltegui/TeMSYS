@@ -1,8 +1,8 @@
 export type Sensor = {
   name: string;
   connection: {
-    connType: string;
-    connValue: string;
+    type: string;
+    value: string;
   };
   updateInterval: number;
   deleted: boolean;
