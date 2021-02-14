@@ -37,6 +37,24 @@ func (repo SQLUserRepository) GetByName(name string) (temsys.User, error) {
 	return user, nil
 }
 
+// Delete a user identified by name.
+func (repo SQLUserRepository) Delete(name string) error {
+	delete := "delete from users where name = ?"
+	_, err := repo.db.Exec(delete, name)
+	return err
+}
+
+// GetAll available users
+func (repo SQLUserRepository) GetAll() []temsys.User {
+	selectQuery := "select name, password, role from users where role != 'admin'"
+	var users []temsys.User
+	err := repo.db.Select(&users, selectQuery)
+	if err != nil {
+		return []temsys.User{}
+	}
+	return users
+}
+
 // ExistsWithName check if a user exists with the requested name. Use this before
 // using GetByName or Save.
 func (repo SQLUserRepository) ExistsWithName(name string) bool {

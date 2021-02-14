@@ -152,6 +152,12 @@ func bootstrapUsers(ctx context) chi.Router {
 	createUserCase := temsys.NewCreateUserCase(ctx.Validator, userRepo, hasher)
 	r.Post("/create", ctx.Auth.Admin(api.CreateUserHandler(createUserCase)))
 
+	deleteUserCase := temsys.NewDeleteUserCase(userRepo)
+	r.Delete("/{name}", ctx.Auth.Admin(api.DeleteUserHandler(deleteUserCase)))
+
+	getAllUsersCase := temsys.NewGetAllUserCase(userRepo)
+	r.Get("/all", ctx.Auth.Admin(api.GetAllUsersHandler(getAllUsersCase)))
+
 	return r
 }
 

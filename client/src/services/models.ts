@@ -22,3 +22,8 @@ export type Token = {
   owner: string;
   role: string;
 }
+
+export type UserResponse = {
+  name: string;
+  role: string;
+}

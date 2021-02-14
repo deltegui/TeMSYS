@@ -32,6 +32,8 @@ type UserRepository interface {
 	Save(User) error
 	GetByName(name string) (User, error)
 	ExistsWithName(name string) bool
+	Delete(name string) error
+	GetAll() []User
 }
 
 // PasswordHasher is the abstraction of anything that can hash or check users password.
@@ -97,12 +99,12 @@ func (login LoginCase) Exec(presenter Presenter, raw UseCaseRequest) {
 
 // CreateUserRequest stores all data needed by CreateUserCase.
 type CreateUserRequest struct {
-	Name     string
-	Password string
+	Name     string `validate:"required,min=3,max=255"`
+	Password string `validate:"required,min=3,max=255"`
 }
 
-// CreateUserResponse is the response returned by CreateUserCase.
-type CreateUserResponse struct {
+// UserResponse is the generic user response.
+type UserResponse struct {
 	Name string
 	Role Role
 }
@@ -115,7 +117,7 @@ type CreateUserCase struct {
 
 // NewCreateUserCase creates a ready to go CreateUserCase.
 func NewCreateUserCase(val Validator, userRepo UserRepository, hasher PasswordHasher) UseCase {
-	return Validate(LoginCase{
+	return Validate(CreateUserCase{
 		userRepository: userRepo,
 		hasher:         hasher,
 	}, val)
@@ -135,8 +137,64 @@ func (create CreateUserCase) Exec(presenter Presenter, raw UseCaseRequest) {
 		Role:     UserRole,
 	}
 	create.userRepository.Save(user)
-	presenter.Present(CreateUserResponse{
+	presenter.Present(UserResponse{
 		Name: req.Name,
 		Role: UserRole,
 	})
+}
+
+// DeleteUserResponse is the data structure returned
+// by DeleteUserCase
+type DeleteUserResponse struct {
+	Name string
+}
+
+// DeleteUserCase handles the creation of a not admin user.
+type DeleteUserCase struct {
+	userRepository UserRepository
+}
+
+// NewDeleteUserCase creates a ready to go DeleteUserCase.
+func NewDeleteUserCase(userRepo UserRepository) UseCase {
+	return DeleteUserCase{
+		userRepository: userRepo,
+	}
+}
+
+// Exec the CreateUser use case. Expects the request to be already validated.
+func (create DeleteUserCase) Exec(presenter Presenter, raw UseCaseRequest) {
+	name := raw.(string)
+	if !create.userRepository.ExistsWithName(name) {
+		presenter.PresentError(UserNotFoundErr)
+		return
+	}
+	create.userRepository.Delete(name)
+	presenter.Present(DeleteUserResponse{
+		Name: name,
+	})
+}
+
+// GetAllUserCase handles the creation of a not admin user.
+type GetAllUserCase struct {
+	userRepository UserRepository
+}
+
+// NewGetAllUserCase creates a ready to go GetAllUserCase.
+func NewGetAllUserCase(userRepo UserRepository) UseCase {
+	return GetAllUserCase{
+		userRepository: userRepo,
+	}
+}
+
+// Exec the GetAll user case.
+func (create GetAllUserCase) Exec(presenter Presenter, raw UseCaseRequest) {
+	users := create.userRepository.GetAll()
+	var result []UserResponse
+	for _, user := range users {
+		result = append(result, UserResponse{
+			Name: user.Name,
+			Role: user.Role,
+		})
+	}
+	presenter.Present(result)
 }

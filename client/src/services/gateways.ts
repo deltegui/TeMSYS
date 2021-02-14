@@ -2,6 +2,7 @@ import {
   Sensor,
   Report,
   Token,
+  UserResponse,
 } from '@/services/models';
 
 export interface SensorRepository {
@@ -29,6 +30,9 @@ export interface ReportRepository {
 
 export interface UserRepository {
   login(data: { name: string; password: string }): Promise<Token>;
+  createUser(user: { name: string; password: string }, token: string): Promise<UserResponse>;
+  deleteUser(user: string, token: string): Promise<string>;
+  getAll(token: string): Promise<UserResponse[]>;
 }
 
 export interface TokenRepository {

@@ -1,5 +1,6 @@
 /* eslint-disable no-useless-constructor */
 import {
+  store,
   actions,
 } from '@/store';
 import {
@@ -7,7 +8,7 @@ import {
   TokenRepository,
 } from './gateways';
 import {
-  Token,
+  Token, UserResponse,
 } from './models';
 
 export default class UserService {
@@ -30,5 +31,17 @@ export default class UserService {
   logout(): void {
     actions.tokens.delete();
     this.tokenRepo.clear();
+  }
+
+  async create(user: { name: string; password: string }) {
+    return this.userRepo.createUser(user, store.token?.value ?? '');
+  }
+
+  async delete(user: string): Promise<string> {
+    return this.userRepo.deleteUser(user, store.token?.value ?? '');
+  }
+
+  async getAll(): Promise<UserResponse[]> {
+    return this.userRepo.getAll(store.token?.value ?? '');
   }
 }

@@ -6,6 +6,7 @@ import (
 	"temsys"
 
 	"github.com/deltegui/phoenix"
+	"github.com/go-chi/chi"
 )
 
 func LoginHandler(loginCase temsys.UseCase) http.HandlerFunc {
@@ -29,5 +30,19 @@ func CreateUserHandler(createUserCase temsys.UseCase) http.HandlerFunc {
 			return
 		}
 		createUserCase.Exec(presenter, userReq)
+	}
+}
+
+func DeleteUserHandler(deleteUserCase temsys.UseCase) http.HandlerFunc {
+	return func(w http.ResponseWriter, req *http.Request) {
+		presenter := phoenix.NewJSONPresenter(w)
+		name := chi.URLParam(req, "name")
+		deleteUserCase.Exec(presenter, name)
+	}
+}
+
+func GetAllUsersHandler(getAllUserCase temsys.UseCase) http.HandlerFunc {
+	return func(w http.ResponseWriter, req *http.Request) {
+		getAllUserCase.Exec(phoenix.NewJSONPresenter(w), temsys.EmptyRequest)
 	}
 }

@@ -9,6 +9,11 @@
         <p>{{store.token.role}}</p>
       </div>
       <router-link to="/">Overview</router-link>
+      <span v-if="!!store.token">
+        <div v-if="store.token.role === 'admin'">
+          <router-link to="/useradmin">User Admin</router-link>
+        </div>
+      </span>
       <router-link v-if="!!store.token" to="/panel">Panel</router-link>
       <a v-if="!!store.token" v-on:click="onLogout">Logout</a>
       <router-link v-else to="/login">Login</router-link>
@@ -107,7 +112,7 @@ nav > img {
   padding: 20px;
 }
 
-nav > a {
+nav > a, div > a {
   margin-bottom: 10px;
   width: 100%;
   display: block;
@@ -128,7 +133,7 @@ nav > a {
   transition: background-color 0.2s;
 }
 
-nav > a:hover {
+nav > a:hover, div > a:hover {
   background-color: var(--main-color);
 }
 </style>

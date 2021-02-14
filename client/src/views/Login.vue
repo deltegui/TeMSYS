@@ -31,7 +31,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useState, actions } from '@/store';
+import { useState } from '@/store';
 import { userService } from '@/services';
 
 export default defineComponent({
