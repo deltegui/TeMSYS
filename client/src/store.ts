@@ -7,32 +7,29 @@ import { Token } from '@/services/models';
 import TokenRepo from '@/impl/tokenstorage';
 
 export type State = {
-  state: Readonly<{ token?: Token }>;
-  deleteToken(): void;
-  setToken(other: Token): void;
+  token?: Token;
 };
 
 const tokenRepo = new TokenRepo();
 const prevToken = tokenRepo.load();
 
 export const stateSymbol = Symbol('state');
+export const useState = () => inject<Readonly<State>>(stateSymbol);
 
-export const createState = (): State => {
-  const state = reactive({
-    token: prevToken,
-  });
-  const setToken = (other: Token) => {
-    state.token = other;
-  };
-  const deleteToken = () => {
-    state.token = undefined;
-  };
+const state = reactive({
+  token: prevToken,
+});
 
-  return {
-    setToken,
-    deleteToken,
-    state: readonly(state),
-  };
+export const store = readonly(state);
+
+export const actions = {
+  tokens: {
+    set: (other: Token) => {
+      state.token = other;
+    },
+
+    delete: () => {
+      state.token = undefined;
+    },
+  },
 };
-
-export const useState = () => inject<State>(stateSymbol);

@@ -82,8 +82,8 @@ func TestGetFilteredReportsCase(t *testing.T) {
 		FilteredReportsRequest: temsys.FilteredReportsRequest{
 			From: timeParseOrPanic("2020-01-02T01:01:01Z"),
 			To:   timeParseOrPanic("2020-01-03T01:01:01Z"),
-			Trim: 10,
 		},
+		Trim:       10,
 		Average:    false,
 		Type:       "temperature",
 		SensorName: "habitacion",

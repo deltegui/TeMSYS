@@ -4,13 +4,13 @@
   <div id="container">
     <nav id="menu">
       <img src="@/assets/logo.png" />
-      <div v-if="!!store.state.token">
-        <h2>{{store.state.token.owner}}</h2>
-        <p>{{store.state.token.role}}</p>
+      <div v-if="!!store.token">
+        <h2>{{store.token.owner}}</h2>
+        <p>{{store.token.role}}</p>
       </div>
       <router-link to="/">Overview</router-link>
-      <router-link v-if="!!store.state.token" to="/panel">Panel</router-link>
-      <a v-if="!!store.state.token" v-on:click="onLogout">Logout</a>
+      <router-link v-if="!!store.token" to="/panel">Panel</router-link>
+      <a v-if="!!store.token" v-on:click="onLogout">Logout</a>
       <router-link v-else to="/login">Login</router-link>
     </nav>
     <main>
@@ -30,18 +30,14 @@ export default defineComponent({
       store: useState(),
     };
   },
-  mounted() {
-    console.log(this.store?.state.token);
-  },
   methods: {
     onLogout() {
-      if (!this.store) return;
-      this.store.deleteToken();
       userService.logout();
+      this.$router.push('/');
     },
 
     role() {
-      return this.store?.state.token?.role;
+      return this.store?.token?.role;
     },
   },
 });

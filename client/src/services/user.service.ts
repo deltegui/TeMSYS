@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-constructor */
 import {
-  State,
+  actions,
 } from '@/store';
 import {
   UserRepository,
@@ -21,12 +21,14 @@ export default class UserService {
       name,
       password,
     }).then((token) => {
+      actions.tokens.set(token);
       this.tokenRepo.save(token);
       return token;
     });
   }
 
   logout(): void {
+    actions.tokens.delete();
     this.tokenRepo.clear();
   }
 }

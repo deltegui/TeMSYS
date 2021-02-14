@@ -31,8 +31,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { useState, actions } from '@/store';
 import { userService } from '@/services';
-import { useState } from '@/store';
 
 export default defineComponent({
   name: 'Login',
@@ -44,13 +44,11 @@ export default defineComponent({
       store: useState(),
     };
   },
-  /*
   mounted() {
-    if (this.store?.state.token) {
+    if (this.store?.token) {
       this.$router.push('/panel');
     }
   },
-  */
   methods: {
     onLogin() {
       this.loginErr = '';
@@ -58,11 +56,7 @@ export default defineComponent({
         name: this.username,
         password: this.password,
       })
-        .then((token) => {
-          this.$router.push('/panel');
-          if (!this.store) return;
-          this.store.setToken(token);
-        })
+        .then(() => this.$router.push('/panel'))
         .catch((err) => {
           this.loginErr = err.reason;
         });

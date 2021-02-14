@@ -20,13 +20,11 @@ export default defineComponent({
       store: useState(),
     };
   },
-  /*
   mounted() {
-    if (this.store?.state.token) {
+    if (!this.store?.token) {
       this.$router.push('/login');
     }
   },
-  */
 });
 </script>
 
@@ -34,13 +32,15 @@ export default defineComponent({
 .container {
   bottom: 0px;
   width: 100vw;
+  padding: 20px;
+  margin-top: 40px;
+
   display: grid;
   grid-template-columns: auto auto;
   gap: 20px;
-  padding: 20px;
 }
 
-@media only screen and (max-width: 1100px) {
+@media only screen and (max-width: 900px) {
   .container {
     grid-template-columns: auto;
   }

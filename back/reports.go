@@ -68,7 +68,6 @@ func roundReportValue(value float64) float32 {
 type FilteredReportsRequest struct {
 	From time.Time `json:"from"`
 	To   time.Time `json:"to"`
-	Trim int       `json:"trim"`
 }
 
 // FilteredReportsBySensorRequest is the request
@@ -77,6 +76,7 @@ type FilteredReportsBySensorRequest struct {
 	Average    bool   `json:"average"`
 	Type       string `json:"type"`
 	SensorName string `json:"sensor"`
+	Trim       int    `json:"trim"`
 }
 
 // GetFilteredReportsBySensor get all reports generated between two dates.
@@ -127,7 +127,6 @@ func (useCase GetFilteredAverageReports) Exec(presenter Presenter, req UseCaseRe
 	reports := useCase.reportRepo.GetFilteredAverage(ReportFilter{
 		From: datesReq.From,
 		To:   datesReq.To,
-		Trim: datesReq.Trim,
 	})
 	for i := range reports {
 		reports[i].Value = roundReportValue(float64(reports[i].Value))

@@ -56,7 +56,7 @@ export default defineComponent({
     const timeout = setTimeout(() => {
       this.loading = false;
     }, 4000);
-    sensorService.readState(this.name, this.store?.state.token?.value ?? '')
+    sensorService.readState(this.name)
       .then((reports: Report[]) => reports.forEach((report) => {
         clearTimeout(timeout);
         this.loading = false;
@@ -74,7 +74,9 @@ export default defineComponent({
 
 <style scoped>
 .card {
-  border-style: none;
+  border-style: solid;
+  border-width: 2px;
+  border-color: var(--bg-alternative-color);
   padding: 10px;
   height: 150px;
 }
