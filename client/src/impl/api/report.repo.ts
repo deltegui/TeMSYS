@@ -51,10 +51,10 @@ export default class ApiReportRepository implements ReportRepository {
       baseQuery += `trim=${trim}&`;
     }
     if (average) {
-      baseQuery += `average${average}&`;
+      baseQuery += `average=${average}&`;
     }
     if (type) {
-      baseQuery += `type${type}&`;
+      baseQuery += `type=${type}&`;
     }
     return makeRequest(baseQuery)
       .then(passReportsToRealDate);

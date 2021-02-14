@@ -2,9 +2,9 @@
 import { ReportRepository, SensorRepository } from './gateways';
 import { Report, Sensor } from './models';
 
-function twoHoursFromNow() {
+function hoursFromNow(hours: number) {
   const date = new Date();
-  date.setHours(date.getHours() - 2);
+  date.setHours(date.getHours() - hours);
   return date;
 }
 
@@ -19,13 +19,17 @@ export default class ReportService {
   ) {}
 
   async getLastReadAverage(): Promise<Report[]> {
-    const from = twoHoursFromNow();
+    const from = hoursFromNow(2);
     const to = new Date();
     return this.reportRepo.getAllReportsAverage({ from, to });
   }
 
+  async getAllReportTypes(): Promise<string[]> {
+    return this.reportRepo.getAllReportTypes();
+  }
+
   async getLastReadForSensor(name: string): Promise<Report[]> {
-    const from = twoHoursFromNow();
+    const from = hoursFromNow(2);
     const to = new Date();
     return this.sensorRepo.getByName(name)
       .then(getNumberSupportedReportTypes)
@@ -37,7 +41,15 @@ export default class ReportService {
       }));
   }
 
-  async getAllReportTypes(): Promise<string[]> {
-    return this.reportRepo.getAllReportTypes();
+  async getTemperatureLatestReports(name: string, trim = 24): Promise<Report[]> {
+    const from = hoursFromNow(trim);
+    const to = new Date();
+    return this.reportRepo.getFiltered({
+      name,
+      fromDate: from,
+      toDate: to,
+      trim,
+      type: 'temperature',
+    });
   }
 }
