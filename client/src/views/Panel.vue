@@ -1,29 +1,38 @@
 <template>
   <div class="container">
-    <SensorCard name="salon"></SensorCard>
-    <SensorCard name="habitacion"></SensorCard>
+    <SensorCard v-for="sensor in sensors" :key="sensor.name" :name="sensor.name"></SensorCard>
   </div>
 </template>
 
 <script lang="ts">
-import { useState } from '@/store';
+import { State, useState } from '@/store';
 import SensorCard from '@/components/SensorCard.vue';
 import { defineComponent } from 'vue';
+import { sensorService } from '@/services';
+import { Sensor } from '@/services/models';
 
 export default defineComponent({
   name: 'Panel',
   components: {
     SensorCard,
   },
-  data() {
+  data(): {
+  store?: Readonly<State>;
+  sensors: Sensor[];
+  } {
     return {
       store: useState(),
+      sensors: [],
     };
   },
   mounted() {
     if (!this.store?.token) {
       this.$router.push('/login');
     }
+    sensorService.getAll()
+      .then((sensors) => {
+        this.sensors = sensors;
+      });
   },
 });
 </script>
