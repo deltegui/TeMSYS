@@ -12,11 +12,18 @@ import { ReportsChart } from '@/impl/chart';
 import { reportService, sensorService } from '@/services';
 import { defineComponent } from 'vue';
 
-const spacingBetweenChartElements = 6;
+const spacingBetweenChartElements = 20;
 const elementsByChart = parseInt(String(window.innerWidth / spacingBetweenChartElements), 10);
 
 function generateCanvasID(name: string) {
   return `previous-chart-${name}`;
+}
+
+function dateIsEqual(first: Date, second: Date): boolean {
+  return first.getFullYear() === second.getFullYear()
+    && first.getMonth() === second.getMonth()
+    && first.getDay() === second.getDay()
+    && first.getHours() === second.getHours();
 }
 
 function groupReportsByDate(reports: Report[]): Report[][] {
@@ -26,7 +33,7 @@ function groupReportsByDate(reports: Report[]): Report[][] {
     let found = false;
     for (let j = 0; j < groups.length; j++) {
       const grp = groups[j];
-      if (grp[0].date.getHours() === report.date.getHours()) {
+      if (dateIsEqual(grp[0].date, report.date)) {
         grp.push(report);
         found = true;
       }

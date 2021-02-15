@@ -37,7 +37,7 @@ func (repo SqlxSensorRepo) Save(sensor temsys.Sensor) error {
 
 // Update a sensor. Returns ture if everithing was ok. Return false if it cant be saved.
 func (repo SqlxSensorRepo) Update(sensor temsys.Sensor) bool {
-	update := "update sensors set conntype = ?, connvalue = ?, update_interval = ?, deleted = ? where name like ?"
+	update := "update sensors set conntype = ?, connvalue = ?, update_interval = ?, deleted = ? where name = ?"
 	tx := repo.beginOrFatal()
 	defer tx.Commit()
 	if _, err := tx.Exec(update, sensor.ConnType, sensor.ConnValue, sensor.UpdateInterval, sensor.Deleted, sensor.Name); err != nil {
@@ -51,7 +51,7 @@ func (repo SqlxSensorRepo) Update(sensor temsys.Sensor) bool {
 
 func (repo SqlxSensorRepo) saveSupportedReportsForSensor(tx *sqlx.Tx, sensor temsys.Sensor) error {
 	insertReport := "insert into used_report_types (sensor, report_type, add_date)values(?, ?, now())"
-	if _, err := tx.Exec("delete from used_report_types where sensor like ?", sensor.Name); err != nil {
+	if _, err := tx.Exec("delete from used_report_types where sensor = ?", sensor.Name); err != nil {
 		return err
 	}
 	for _, reportType := range sensor.SupportedReports {
@@ -84,7 +84,7 @@ func (repo SqlxSensorRepo) GetAll(showDeleted temsys.ShowDeleted) ([]temsys.Sens
 // fetching it.
 func (repo SqlxSensorRepo) GetByName(name string) (temsys.Sensor, error) {
 	var sensor []temsys.Sensor
-	err := repo.db.Select(&sensor, "select name, conntype, connvalue, update_interval, deleted from sensors where name like ?", name)
+	err := repo.db.Select(&sensor, "select name, conntype, connvalue, update_interval, deleted from sensors where name = ?", name)
 	if err != nil || len(sensor) < 1 {
 		log.Printf("Sensor not found or error: %s\n", err)
 		return temsys.Sensor{}, fmt.Errorf("Sensor not found")
@@ -96,7 +96,7 @@ func (repo SqlxSensorRepo) GetByName(name string) (temsys.Sensor, error) {
 
 func (repo SqlxSensorRepo) fillSupportedReportsForSensor(sensor *temsys.Sensor) {
 	var reports []string = []string{}
-	err := repo.db.Select(&reports, "select report_type from used_report_types where sensor like ?", sensor.Name)
+	err := repo.db.Select(&reports, "select report_type from used_report_types where sensor = ?", sensor.Name)
 	if err != nil {
 		log.Println(err)
 		sensor.SupportedReports = []string{}

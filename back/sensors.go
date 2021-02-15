@@ -275,6 +275,10 @@ func NewUpdateSensorCase(validator Validator, sensorRepo SensorRepo, reporter Re
 // Exec update sensor case.
 func (useCase UpdateSensorCase) Exec(presenter Presenter, req UseCaseRequest) {
 	viewModel := req.(SensorResponse)
+	if _, err := useCase.sensorRepo.GetByName(viewModel.Name); err != nil {
+		presenter.PresentError(SensorNotFoundErr)
+		return
+	}
 	if !haveReportTypes(useCase.reportTypeRepo, viewModel.SupportedReports) {
 		presenter.PresentError(ReportTypeDoesNotExists)
 		return
