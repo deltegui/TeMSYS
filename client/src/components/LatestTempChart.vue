@@ -87,12 +87,13 @@ export default defineComponent({
         .then((res) => res.flat())
         .then(groupReportsByDate)
         .then(calculateAverageByGroup)
+        .then(reportService.roundAllReports.bind(reportService))
         .then((reports) => reports.sort(compareReportsByDate))
         .then((reports) => this.draw(reports));
     },
 
     loadChartFor(sensorName: string) {
-      reportService.getTemperatureLatestReports(sensorName, elementsByChart)
+      reportService.getTemperatureLatestReports(sensorName, 40)
         .then((reports) => reports.sort(compareReportsByDate))
         .then((reports) => this.draw(reports));
     },

@@ -45,13 +45,19 @@ export default defineComponent({
   margin-top: 40px;
 
   display: grid;
-  grid-template-columns: auto auto;
+  grid-template-columns: 49% 49%;
   gap: 20px;
 }
 
 @media only screen and (max-width: 900px) {
   .container {
-    grid-template-columns: auto;
+    grid-template-columns: 100%;
+  }
+}
+
+@media only screen and (min-width: 1417px) {
+  .container {
+    grid-template-columns: 32% 33% 32%;
   }
 }
 </style>

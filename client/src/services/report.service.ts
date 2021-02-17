@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 /* eslint-disable no-useless-constructor */
 import { ReportRepository, SensorRepository } from './gateways';
 import { Report, Sensor } from './models';
@@ -51,5 +52,18 @@ export default class ReportService {
       trim,
       type: 'temperature',
     });
+  }
+
+  roundReportValue(value: number): number {
+    return Math.round(value * 100) / 100;
+  }
+
+  roundAllReports(report: Report[]): Report[] {
+    return report.map((r) => ({
+      type: r.type,
+      sensor: r.sensor,
+      date: r.date,
+      value: this.roundReportValue(r.value),
+    }));
   }
 }

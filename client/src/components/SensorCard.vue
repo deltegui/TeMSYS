@@ -11,6 +11,7 @@
       <div v-if="enabled">
         <h1>{{ temperature }}ºC</h1>
         <h2 v-if="!!humidity">Humedad: {{ humidity }}%</h2>
+        <LatestTempChart :sensor="name" />
       </div>
       <div v-else>
         <h2>Sensor is not responding</h2>
@@ -25,11 +26,13 @@ import { Report } from '@/services/models';
 import { sensorService } from '@/services';
 import { State, useState } from '@/store';
 import LoadingRoller from './LoadingRoller.vue';
+import LatestTempChart from './LatestTempChart.vue';
 
 export default defineComponent({
   name: 'SensorCard',
   components: {
     LoadingRoller,
+    LatestTempChart,
   },
   props: {
     name: {
@@ -76,9 +79,9 @@ export default defineComponent({
 .card {
   border-style: solid;
   border-width: 2px;
-  border-color: var(--bg-alternative-color);
+  border-color: var(--fg-weak-color);
   padding: 10px;
-  height: 150px;
+  height: 300px;
 }
 
 .card > aside {
@@ -119,5 +122,10 @@ main h1 {
 main h2 {
   margin: 0px;
   font-size: 15px;
+}
+
+.latest-temp-chart, .latest-temp-chart > * {
+  width: 100%;
+  height: 150px;
 }
 </style>
