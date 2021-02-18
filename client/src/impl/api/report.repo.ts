@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import {
-  Report,
+  Report, ReportFilter,
 } from '@/services/models';
 
 import {
@@ -33,15 +33,7 @@ export default class ApiReportRepository implements ReportRepository {
       fromDate,
       toDate,
       average,
-    }:
-    {
-      name: string;
-      type?: string;
-      trim?: number;
-      fromDate?: Date;
-      toDate?: Date;
-      average?: boolean;
-    },
+    }: ReportFilter,
   ): Promise<Report[]> {
     let baseQuery = `/sensor/${name}/reports?`;
     if (fromDate && toDate) {

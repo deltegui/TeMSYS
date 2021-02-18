@@ -8,12 +8,13 @@
 /* eslint-disable no-plusplus */
 
 import { Report } from '@/services/models';
-import { ReportsChart } from '@/impl/chart';
-import { reportService, sensorService } from '@/services';
+import { drawChart } from '@/impl/chart';
+import {
+  reportService,
+  sensorService,
+  chartService,
+} from '@/services';
 import { defineComponent } from 'vue';
-
-const spacingBetweenChartElements = 20;
-const elementsByChart = parseInt(String(window.innerWidth / spacingBetweenChartElements), 10);
 
 function generateCanvasID(name: string) {
   return `previous-chart-${name}`;
@@ -62,10 +63,6 @@ function calculateAverageByGroup(groups: Report[][]) {
   return averageReports;
 }
 
-function compareReportsByDate(a: Report, b: Report): number {
-  return a.date.getTime() - b.date.getTime();
-}
-
 export default defineComponent({
   name: 'chart',
   props: {
@@ -81,27 +78,30 @@ export default defineComponent({
     loadAverageChart() {
       sensorService.getAll()
         .then((sensors) => Promise.all(
-          sensors
-            .map(({ name }) => reportService.getTemperatureLatestReports(name, elementsByChart)),
+          sensors.map(({ name }) => reportService.getTemperatureLatestReports(
+            name,
+            chartService.calculateElementsByChart(),
+          )),
         ))
-        .then((res) => res.flat())
+        .then(chartService.flatAndSort.bind(chartService))
         .then(groupReportsByDate)
         .then(calculateAverageByGroup)
         .then(reportService.roundAllReports.bind(reportService))
-        .then((reports) => reports.sort(compareReportsByDate))
         .then((reports) => this.draw(reports));
     },
 
     loadChartFor(sensorName: string) {
       reportService.getTemperatureLatestReports(sensorName, 40)
-        .then((reports) => reports.sort(compareReportsByDate))
+        .then(chartService.sortReports)
         .then((reports) => this.draw(reports));
     },
 
     draw(reports: Report[]) {
-      const chart = new ReportsChart(generateCanvasID(this.name));
-      chart.data = reports;
-      chart.draw();
+      const data = chartService.genearateDataSetsForOneSensor(reports);
+      drawChart({
+        mountID: generateCanvasID(this.name),
+        ...data,
+      });
     },
   },
   mounted() {

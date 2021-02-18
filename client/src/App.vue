@@ -15,6 +15,7 @@
           <router-link to="/sensoradmin">Sensor Admin</router-link>
         </div>
       </span>
+      <router-link v-if="!!store.token" to="/historic">Historical</router-link>
       <router-link v-if="!!store.token" to="/panel">Panel</router-link>
       <a v-if="!!store.token" v-on:click="onLogout">Logout</a>
       <router-link v-else to="/login">Login</router-link>

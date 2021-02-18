@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable no-useless-constructor */
 import { ReportRepository, SensorRepository } from './gateways';
-import { Report, Sensor } from './models';
+import { Report, ReportFilter, Sensor } from './models';
 
 function hoursFromNow(hours: number) {
   const date = new Date();
@@ -65,5 +65,9 @@ export default class ReportService {
       date: r.date,
       value: this.roundReportValue(r.value),
     }));
+  }
+
+  readReportsFiltered(filters: ReportFilter): Promise<Report[]> {
+    return this.reportRepo.getFiltered(filters);
   }
 }

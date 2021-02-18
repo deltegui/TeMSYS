@@ -6,6 +6,7 @@ import LocalStorageTokenRepository from '@/impl/tokenstorage';
 import ReportService from './report.service';
 import SensorService from './sensor.service';
 import UserService from './user.service';
+import internalChartService from './chart.service';
 
 const sensorRepo = new ApiSensorRepository();
 const reportRepo = new ApiReportRepository();
@@ -15,5 +16,6 @@ const storageTokenRepo = new LocalStorageTokenRepository();
 export const userService = new UserService(userRepo, storageTokenRepo);
 export const reportService = new ReportService(reportRepo, sensorRepo);
 export const sensorService = new SensorService(sensorRepo);
+export const chartService = internalChartService;
 
 onTokenExpired(userService.logout);
