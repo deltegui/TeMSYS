@@ -66,6 +66,7 @@ input[type="checkbox"] {
 
 input:checked ~ #container nav {
   left: 0px;
+  box-shadow: 10px 0px 20px #0a0a0d;
 }
 
 label {
@@ -105,8 +106,9 @@ nav {
   left: -250px;
   width: 250px;
   height: 100vh;
-  background-color: var(--bg-main-color);
-  transition: left 0.3s;
+  background-color: var(--bg-menu-color);
+  box-shadow: 0px 0px 0px #0a0a0d;
+  transition: left 0.3s, box-shadow 0.3s;
 }
 
 nav > img {
@@ -142,6 +144,7 @@ nav > a:hover, div > a:hover {
 
 <style>
 :root {
+  --bg-menu-color: #18181c;
   --bg-main-color: #1a1a1d;
   --bg-alternative-color: #202020;
   --fg-strong-color: #c3073f;

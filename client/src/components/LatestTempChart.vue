@@ -6,7 +6,6 @@
 
 <script lang="ts">
 
-import { Report } from '@/services/models';
 import { drawChart } from '@/impl/chart';
 import {
   reportService,

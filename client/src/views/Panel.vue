@@ -58,6 +58,10 @@ export default defineComponent({
 @media only screen and (min-width: 1417px) {
   .container {
     grid-template-columns: 32% 33% 32%;
+    width: 100%;
+    max-width: 1600px;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 </style>

@@ -38,11 +38,17 @@ export default defineComponent({
 .container {
   bottom: 0px;
   width: 100vw;
-  padding: 20px;
+  padding: 20px 20vw 20px 20vw;
   margin-top: 40px;
 
   display: flex;
   flex-direction: column;
+}
+
+@media only screen and (max-width: 900px) {
+  .container {
+    padding: 20px;
+  }
 }
 
 .container > h1 {
