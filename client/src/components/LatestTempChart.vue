@@ -5,7 +5,6 @@
 </template>
 
 <script lang="ts">
-/* eslint-disable no-plusplus */
 
 import { Report } from '@/services/models';
 import { drawChart } from '@/impl/chart';
@@ -15,52 +14,10 @@ import {
   chartService,
 } from '@/services';
 import { defineComponent } from 'vue';
+import { ChartData } from '@/services/chart.service';
 
 function generateCanvasID(name: string) {
   return `previous-chart-${name}`;
-}
-
-function dateIsEqual(first: Date, second: Date): boolean {
-  return first.getFullYear() === second.getFullYear()
-    && first.getMonth() === second.getMonth()
-    && first.getDay() === second.getDay()
-    && first.getHours() === second.getHours();
-}
-
-function groupReportsByDate(reports: Report[]): Report[][] {
-  const groups = [];
-  for (let i = 0; i < reports.length; i++) {
-    const report = reports[i];
-    let found = false;
-    for (let j = 0; j < groups.length; j++) {
-      const grp = groups[j];
-      if (dateIsEqual(grp[0].date, report.date)) {
-        grp.push(report);
-        found = true;
-      }
-    }
-    if (!found) {
-      groups.push([report]);
-    }
-  }
-  return groups;
-}
-
-function calculateAverageByGroup(groups: Report[][]) {
-  const averageReports = [];
-  for (let j = 0; j < groups.length; j++) {
-    const grp = groups[j];
-    const sum = grp.reduce((prev, current) => prev + current.value, 0);
-    const value = sum / grp.length;
-    const { type, date } = grp[0];
-    averageReports.push({
-      type,
-      date,
-      sensor: 'average',
-      value,
-    });
-  }
-  return averageReports;
 }
 
 export default defineComponent({
@@ -78,26 +35,25 @@ export default defineComponent({
     loadAverageChart() {
       sensorService.getAll()
         .then((sensors) => Promise.all(
-          sensors.map(({ name }) => reportService.getTemperatureLatestReports(
+          sensors.map(({ name }) => reportService.getLatestReports({
             name,
-            chartService.calculateElementsByChart(),
-          )),
+            trim: chartService.calculateElementsByChart(),
+          })),
         ))
-        .then(chartService.flatAndSort.bind(chartService))
-        .then(groupReportsByDate)
-        .then(calculateAverageByGroup)
-        .then(reportService.roundAllReports.bind(reportService))
-        .then((reports) => this.draw(reports));
+        .then(chartService.getAverageAllReports.bind(chartService))
+        .then((groups) => groups.map(reportService.roundAllReports.bind(reportService)))
+        .then((reports) => chartService.generateDataSetsForSensors(reports))
+        .then((data) => this.draw(data));
     },
 
     loadChartFor(sensorName: string) {
-      reportService.getTemperatureLatestReports(sensorName, 40)
+      reportService.getLatestReports({ name: sensorName, trim: 48 })
         .then(chartService.sortReports)
-        .then((reports) => this.draw(reports));
+        .then((reports) => chartService.genearateDataSetsForOneSensor(reports))
+        .then((data) => this.draw(data));
     },
 
-    draw(reports: Report[]) {
-      const data = chartService.genearateDataSetsForOneSensor(reports);
+    draw(data: ChartData) {
       drawChart({
         mountID: generateCanvasID(this.name),
         ...data,

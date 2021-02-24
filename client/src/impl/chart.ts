@@ -1,6 +1,10 @@
 /* eslint-disable no-new */
 import Chart from 'chart.js';
 
+type LabeledObject = {
+  label: string;
+}
+
 export type ChartOptions = {
   mountID: string;
   datasets: any;
@@ -18,6 +22,24 @@ export function drawChart({
   showLegend = false,
   showTitle = false,
 }: ChartOptions) {
+  const yAxes = [
+    {
+      id: datasets[0].label,
+      position: 'left',
+      gridLines: {
+        display: false,
+      },
+    },
+  ];
+  if (datasets.length === 2) {
+    yAxes.push({
+      id: datasets[1].label,
+      position: 'right',
+      gridLines: {
+        display: false,
+      },
+    });
+  }
   new Chart(mountID, {
     type: 'line',
     data: {
@@ -53,13 +75,7 @@ export function drawChart({
             },
           },
         ],
-        yAxes: [
-          {
-            gridLines: {
-              display: false,
-            },
-          },
-        ],
+        yAxes,
       },
     },
   });

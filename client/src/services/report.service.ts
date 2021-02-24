@@ -42,7 +42,15 @@ export default class ReportService {
       }));
   }
 
-  async getTemperatureLatestReports(name: string, trim = 24): Promise<Report[]> {
+  async getLatestReports({
+    name,
+    trim = 48,
+    type = undefined,
+  }: {
+    name: string;
+    trim: number;
+    type?: string;
+  }): Promise<Report[]> {
     const from = hoursFromNow(trim);
     const to = new Date();
     return this.reportRepo.getFiltered({
@@ -50,7 +58,7 @@ export default class ReportService {
       fromDate: from,
       toDate: to,
       trim,
-      type: 'temperature',
+      type,
     });
   }
 
