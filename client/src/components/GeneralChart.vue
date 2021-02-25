@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import { Report, ReportFilter } from '@/services/models';
-import { drawChart } from '@/impl/chart';
+import { SensorChart } from '@/impl/chart';
 import {
   chartService,
   reportService,
@@ -23,8 +23,20 @@ export default defineComponent({
       required: true,
     },
   },
+  data(): {
+  chart: SensorChart | undefined;
+  } {
+    return {
+      chart: undefined,
+    };
+  },
   mounted() {
     this.triggerUpload();
+  },
+  watch: {
+    filters() {
+      this.triggerUpload();
+    },
   },
   methods: {
     triggerUpload() {
@@ -38,10 +50,14 @@ export default defineComponent({
 
     draw(reports: Report[][]) {
       const data = chartService.generateDataSetsForSensors(reports);
-      drawChart({
-        mountID: canvasID,
-        ...data,
-      });
+      if (!this.chart) {
+        this.chart = new SensorChart({
+          mountID: canvasID,
+          ...data,
+        });
+      } else {
+        this.chart.update(data);
+      }
     },
   },
 });

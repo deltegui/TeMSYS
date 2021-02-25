@@ -1,27 +1,7 @@
 /* eslint-disable no-new */
 import Chart from 'chart.js';
 
-type LabeledObject = {
-  label: string;
-}
-
-export type ChartOptions = {
-  mountID: string;
-  datasets: any;
-  labels: string[];
-  tooltips?: string[][];
-  showLegend?: boolean;
-  showTitle?: boolean;
-}
-
-export function drawChart({
-  mountID,
-  datasets,
-  labels,
-  tooltips = undefined,
-  showLegend = false,
-  showTitle = false,
-}: ChartOptions) {
+function createYAxesFrom(datasets: any): any {
   const yAxes = [
     {
       id: datasets[0].label,
@@ -40,7 +20,28 @@ export function drawChart({
       },
     });
   }
-  new Chart(mountID, {
+  return yAxes;
+}
+
+function label(tooltips: any): any {
+  return (items: any) => {
+    if (tooltips) {
+      return `[${items.yLabel}]: ${tooltips[items.datasetIndex ?? 0][items.index ?? 0]}`;
+    }
+    return `${items.yLabel}: ${items.xLabel}`;
+  };
+}
+
+export function createChart({
+  mountID,
+  datasets,
+  labels,
+  tooltips = undefined,
+  showLegend = false,
+  showTitle = false,
+}: ChartOptions): Chart {
+  const yAxes = (datasets.length === 0) ? [] : createYAxesFrom(datasets);
+  return new Chart(mountID, {
     type: 'line',
     data: {
       labels,
@@ -50,21 +51,16 @@ export function drawChart({
       responsive: true,
       maintainAspectRatio: false,
       legend: {
-        display: !!showLegend,
+        display: showLegend,
       },
       title: {
-        display: !!showTitle,
+        display: showTitle,
       },
       tooltips: {
         enabled: true,
         mode: 'single',
         callbacks: {
-          label(items) {
-            if (tooltips) {
-              return `[${items.yLabel}]: ${tooltips[items.datasetIndex ?? 0][items.index ?? 0]}`;
-            }
-            return `${items.yLabel}: ${items.xLabel}`;
-          },
+          label: label(tooltips),
         },
       },
       scales: {
@@ -79,4 +75,53 @@ export function drawChart({
       },
     },
   });
+}
+
+export type ChartOptions = {
+  mountID: string;
+  datasets: any;
+  labels: string[];
+  tooltips?: string[][];
+  showLegend?: boolean;
+  showTitle?: boolean;
+}
+
+export class SensorChart {
+  private chart: Chart;
+
+  constructor(private options: ChartOptions) {
+    this.chart = createChart(this.options);
+  }
+
+  update(data: {
+    datasets: any;
+    labels: string[];
+    tooltips?: any;
+  }) {
+    this.chart.data = {
+      labels: data.labels,
+      datasets: data.datasets,
+    };
+    this.chart.options = {
+      tooltips: {
+        callbacks: {
+          label: label(data.tooltips),
+        },
+      },
+      scales: {
+        yAxes: (data.datasets.length === 0) ? [] : createYAxesFrom(data.datasets),
+      },
+      legend: {
+        display: this.options.showLegend,
+      },
+      title: {
+        display: this.options.showTitle,
+      },
+    };
+    this.chart.update();
+  }
+}
+
+export function drawChart(options: ChartOptions) {
+  new SensorChart(options);
 }

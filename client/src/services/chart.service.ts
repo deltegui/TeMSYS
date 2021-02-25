@@ -123,6 +123,7 @@ function generateDataSets(separatedReports: any): DataEntry[] {
 }
 
 function generateLabels(separatedReports: any): string[] {
+  if (Object.keys(separatedReports).length === 0) return [];
   const firstGroup = separatedReports[Object.keys(separatedReports)[0]];
   return firstGroup.map((e: Report) => e.date.getHours());
 }

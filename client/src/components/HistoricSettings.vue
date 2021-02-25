@@ -7,11 +7,14 @@
     <HistoricDatasetForm @add="addDataset" />
     <div>
       <h3>Selected datasets</h3>
-      <div class="dataset" v-for="(set, index) in datasets" v-bind:key="index">
-        <h4>{{set.sensor}}</h4>
+      <div class="dataset" v-for="(set) in datasets" v-bind:key="set.id">
+        <h4>{{set.id}} {{set.sensor}}</h4>
         {{set.reports.join(", ")}}
         {{set.to}}
         {{set.from}}
+        <button class="temsys-btn temsys-red" @click="() => onDatasetClose(set.id)">
+          <img src="@/assets/close-icon.png"/>
+        </button>
       </div>
     </div>
   </div>
@@ -20,6 +23,28 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import HistoricDatasetForm from './HistoricDatasetForm.vue';
+
+class ID {
+  private ids: Generator<number>;
+
+  constructor() {
+    this.ids = ID.generator();
+  }
+
+  private static* generator(): Generator<number> {
+    let i = 0;
+    for (;;) {
+      yield i;
+      i += 1;
+    }
+  }
+
+  public next(): number {
+    return this.ids.next().value;
+  }
+}
+
+const id = new ID();
 
 export default defineComponent({
   components: { HistoricDatasetForm },
@@ -31,6 +56,7 @@ export default defineComponent({
   },
   data(): {
   datasets: {
+    id: number;
     from: Date;
     to: Date;
     sensor: string;
@@ -57,7 +83,21 @@ export default defineComponent({
     sensor: string;
     reports: string[];
     }) {
-      this.datasets.push(dataset);
+      this.datasets.push({
+        id: id.next(),
+        ...dataset,
+      });
+      this.onChange();
+    },
+
+    onDatasetClose(selectedId: number) {
+      this.datasets = this.datasets
+        .filter((data) => data.id !== selectedId);
+      this.onChange();
+    },
+
+    onChange() {
+      this.$emit('dataset', this.datasets);
     },
   },
 });
@@ -65,6 +105,7 @@ export default defineComponent({
 
 <style scoped>
 #historic-settings {
+  z-index: 1;
   position: absolute;
 
   width: 80vw;
@@ -142,6 +183,8 @@ export default defineComponent({
 }
 
 .dataset {
+  position: relative;
+
   border-style: solid;
   border-width: 2px;
   border-radius: 5px;
@@ -154,5 +197,21 @@ export default defineComponent({
 .dataset > h4 {
   padding: 0px 0px 10px 0px;
   margin: 0px;
+}
+
+.dataset > button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 40px;
+  height: 40px;
+}
+
+.dataset > button > img {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  width: 20px;
+  height: 20px;
 }
 </style>

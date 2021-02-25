@@ -1,8 +1,14 @@
 <template>
   <div class="container">
-    <HistoricSettings :show="showSettings" @close="close"/>
-    <h1 v-on:click="show">Historic</h1>
+    <HistoricSettings
+      :show="showSettings"
+      @close="close"
+      @dataset="onFiltersChange"/>
+    <h1>Historic</h1>
     <GeneralChart :filters="filters" />
+    <button class="temsys-btn temsys-green" @click="show">
+      Settings
+    </button>
   </div>
 </template>
 
@@ -12,33 +18,18 @@ import HistoricSettings from '@/components/HistoricSettings.vue';
 import { ReportFilter } from '@/services/models';
 import { defineComponent } from 'vue';
 
-const filters: ReportFilter[] = [
-  {
-    name: 'habitacion',
-    type: 'humidity',
-    trim: 30,
-  },
-  {
-    name: 'cocina',
-    type: 'humidity',
-    trim: 30,
-  },
-  {
-    name: 'salon',
-    type: 'humidity',
-    trim: 30,
-  },
-];
-
 export default defineComponent({
   name: 'Historic',
   components: {
     GeneralChart,
     HistoricSettings,
   },
-  data() {
+  data(): {
+  filters: ReportFilter[];
+  showSettings: boolean;
+  } {
     return {
-      filters,
+      filters: [],
       showSettings: false,
     };
   },
@@ -50,6 +41,23 @@ export default defineComponent({
     close() {
       this.showSettings = false;
     },
+
+    onFiltersChange(datasets: {
+    id: number;
+    from: Date;
+    to: Date;
+    sensor: string;
+    reports: string[];
+    }[]) {
+      this.filters = datasets
+        .map((dataset) => dataset.reports.map((report) => ({
+          fromDate: dataset.from,
+          toDate: dataset.to,
+          name: dataset.sensor,
+          type: report,
+        })))
+        .flat();
+    },
   },
 });
 </script>
@@ -59,5 +67,12 @@ export default defineComponent({
   padding: 30px 20px 20px 20px;
   width: 100vw;
   height: 100vh;
+}
+
+.container > button {
+  z-index: 0;
+  position: absolute;
+  top: 10px;
+  right: 10px;
 }
 </style>
