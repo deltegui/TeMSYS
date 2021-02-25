@@ -7,7 +7,7 @@
     <HistoricDatasetForm @add="addDataset" />
     <div>
       <h3>Selected datasets</h3>
-      <div v-for="(set, index) in datasets" v-bind:key="index">
+      <div class="dataset" v-for="(set, index) in datasets" v-bind:key="index">
         <h4>{{set.sensor}}</h4>
         {{set.reports.join(", ")}}
         {{set.to}}
@@ -119,7 +119,7 @@ export default defineComponent({
 }
 
 .close-btn:hover {
-  background-color: var(--fg-weak-color)
+  background-color: var(--fg-weak-color);
 }
 
 .close-btn > img {
@@ -139,5 +139,20 @@ export default defineComponent({
 
 #add-form > * {
   margin-top: 10px;
+}
+
+.dataset {
+  border-style: solid;
+  border-width: 2px;
+  border-radius: 5px;
+  border-color: var(--fg-weak-color);
+
+  padding: 10px;
+  margin-top: 10px;
+}
+
+.dataset > h4 {
+  padding: 0px 0px 10px 0px;
+  margin: 0px;
 }
 </style>
