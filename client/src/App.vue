@@ -13,6 +13,7 @@
         <div v-if="store.token.role === 'admin'">
           <router-link to="/useradmin">User Admin</router-link>
           <router-link to="/sensoradmin">Sensor Admin</router-link>
+          <router-link to="/typesadmin">ReportTypes Admin</router-link>
         </div>
       </span>
       <router-link v-if="!!store.token" to="/historic">Historical</router-link>

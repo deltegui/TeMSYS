@@ -43,5 +43,6 @@ var (
 
 // Report errors
 var (
-	ReportTypeDoesNotExists = UseCaseError{Code: 300, Reason: "ReportType does not exits"}
+	ReportTypeDoesNotExists = UseCaseError{Code: 300, Reason: "ReportType does not exists"}
+	ReportTypeAlreadyExists = UseCaseError{Code: 301, Reason: "ReportType already exists"}
 )

@@ -1,5 +1,6 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable no-useless-constructor */
+import { store } from '@/store';
 import { ReportRepository, SensorRepository } from './gateways';
 import { Report, ReportFilter, Sensor } from './models';
 
@@ -27,6 +28,10 @@ export default class ReportService {
 
   async getAllReportTypes(): Promise<string[]> {
     return this.reportRepo.getAllReportTypes();
+  }
+
+  async saveReportType(name: string): Promise<boolean> {
+    return this.reportRepo.saveReportType(name, store.token?.value ?? '');
   }
 
   async getLastReadForSensor(name: string): Promise<Report[]> {

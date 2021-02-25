@@ -5,6 +5,7 @@ import Panel from '../views/Panel.vue';
 import UserAdmin from '../views/UserAdmin.vue';
 import SensorAdmin from '../views/SensorAdmin.vue';
 import Historic from '../views/Historic.vue';
+import TypesAdmin from '../views/TypesAdmin.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -31,6 +32,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/sensoradmin',
     name: 'SensorAdmin',
     component: SensorAdmin,
+  },
+  {
+    path: '/typesadmin',
+    name: 'TypesAdmin',
+    component: TypesAdmin,
   },
   {
     path: '/historic',

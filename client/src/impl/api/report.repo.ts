@@ -73,4 +73,8 @@ export default class ApiReportRepository implements ReportRepository {
   async getAllReportTypes(): Promise<string[]> {
     return makeRequest('/reports/types');
   }
+
+  async saveReportType(name: string, token: string): Promise<boolean> {
+    return makeRequest(`/reports/types/${name}`, { method: 'POST', token });
+  }
 }

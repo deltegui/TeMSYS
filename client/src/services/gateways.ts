@@ -30,6 +30,7 @@ export interface ReportRepository {
     to: Date;
   }): Promise<Report[]>;
   getAllReportTypes(): Promise<string[]>;
+  saveReportType(name: string, token: string): Promise<boolean>;
 }
 
 export interface UserRepository {
