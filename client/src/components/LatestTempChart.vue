@@ -14,9 +14,21 @@ import {
 } from '@/services';
 import { defineComponent } from 'vue';
 import { ChartData } from '@/services/chart.service';
+import { Sensor } from '@/services/models';
 
 function generateCanvasID(name: string) {
   return `previous-chart-${name}`;
+}
+
+const enabledReportTypes = [
+  'temperature',
+  'humidity',
+];
+
+function allTypesAreSupported(sensor: Sensor): boolean {
+  return sensor.supportedReports
+    .flatMap((supported) => enabledReportTypes.includes(supported))
+    .reduce((prev, current) => prev && current, true);
 }
 
 export default defineComponent({
@@ -33,6 +45,7 @@ export default defineComponent({
   methods: {
     loadAverageChart() {
       sensorService.getAll()
+        .then((sensors) => sensors.filter(allTypesAreSupported))
         .then((sensors) => Promise.all(
           sensors.map(({ name }) => reportService.getLatestReports({
             name,
