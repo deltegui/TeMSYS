@@ -1,4 +1,5 @@
 import os
+import time
 from datetime import datetime, timedelta
 from threading import Thread, Lock
 from flask import Flask
@@ -11,8 +12,8 @@ class WattReport:
         self.time = time
 
     def is_old(self):
-        twentyMinutesAgo = datetime.now() - timedelta(minutes=20)
-        return self.time < twentyMinutesAgo
+        fifteenMinutesAgo = datetime.now() - timedelta(minutes=15)
+        return self.time < fifteenMinutesAgo
 
 
 class WattCache:
@@ -52,7 +53,7 @@ class Sensor:
     def __init__(self):
         self.mutex = Lock()
         self.connection = Iber()
-        self.connection.login(os.environ.get('IBER_USER'), os.environ.get('IBER_PASS'))
+        self.__login()
         self.reading = False
 
     def read(self):
@@ -63,7 +64,7 @@ class Sensor:
         self.reading = True
         self.mutex.release()
 
-        watt = self.connection.watthourmeter()
+        watt = self.__try_read_until_success()
         report = WattReport(watt, datetime.now())
 
         self.mutex.acquire()
@@ -71,24 +72,43 @@ class Sensor:
         self.mutex.release()
         return report
 
+    def __try_read_until_success(self):
+        watt = None
+        while True:
+            try:
+                watt = self.connection.watthourmeter()
+                break
+            except:
+                print("Error while reading. Retrying in 2 seconds")
+                self.__login()
+                time.sleep(2)
+        return watt
+
+    def __login(self):
+        self.connection.login(os.environ.get('IBER_USER'), os.environ.get('IBER_PASS'))
 
 app = Flask(__name__)
 sensor = Sensor()
 cache = WattCache()
 
 def refresh_data():
+    print("Updating...")
     report = sensor.read()
     if report is None:
+        print("We are working on it already")
         return WattReport(0, datetime.now())
     cache.save(report)
+    print("Updated!")
     return report
 
 @app.route('/')
 def serve_data():
     report = cache.load()
     if report is None:
+        print("Empty cache")
         report = refresh_data()
     if report.is_old():
+        print("Old cache")
         Thread(target=refresh_data).start()
     return {
         "watts": report.watts,
