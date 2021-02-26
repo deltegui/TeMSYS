@@ -27,7 +27,7 @@ const enabledReportTypes = [
 
 function allTypesAreSupported(sensor: Sensor): boolean {
   return sensor.supportedReports
-    .flatMap((supported) => enabledReportTypes.includes(supported))
+    .map((supported) => enabledReportTypes.includes(supported))
     .reduce((prev, current) => prev && current, true);
 }
 
