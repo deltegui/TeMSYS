@@ -29,11 +29,12 @@ export default defineComponent({
       })
       .then(this.loadInitialSelection)
       .then((initial) => {
-        this.elements
+        this.elements = this.elements
           .filter((e) => initial.includes(e.name))
-          .forEach((e) => {
-            e.checked = true;
-          });
+          .map((e) => ({
+            name: e.name,
+            checked: true,
+          }));
       });
   },
 });
