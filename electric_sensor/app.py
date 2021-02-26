@@ -95,7 +95,7 @@ def refresh_data():
     print("Updating...")
     report = sensor.read()
     if report is None:
-        print("We are working on it already")
+        print("We are already working on it")
         return WattReport(0, datetime.now())
     cache.save(report)
     print("Updated!")
