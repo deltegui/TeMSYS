@@ -9,7 +9,8 @@
     </main>
     <main v-else>
       <div v-if="enabled">
-        <h1>{{ temperature }}ºC</h1>
+        <h1 v-if="!!temperature">{{ temperature }}ºC</h1>
+        <h1 v-if="!!watts">{{ watts }} W</h1>
         <h2 v-if="!!humidity">Humedad: {{ humidity }}%</h2>
         <LatestTempChart :sensor="name" />
       </div>
@@ -43,6 +44,7 @@ export default defineComponent({
   data(): {
     temperature: number | null;
     humidity: number | null;
+    watts: number | null;
     enabled: boolean;
     loading: boolean;
     store?: State;
@@ -50,6 +52,7 @@ export default defineComponent({
     return {
       temperature: null,
       humidity: null,
+      watts: null,
       enabled: false,
       loading: true,
       store: useState(),
@@ -66,6 +69,9 @@ export default defineComponent({
         this.enabled = true;
         if (report.type === 'temperature') {
           this.temperature = report.value;
+        }
+        if (report.type === 'watts') {
+          this.watts = report.value;
         }
         if (report.type === 'humidity') {
           this.humidity = report.value;

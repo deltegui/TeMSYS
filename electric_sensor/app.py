@@ -10,7 +10,7 @@ class WattReport:
         self.time = time
 
     def is_old(self):
-        twentyMinutesAgo = datetime.now() - timedelta(minutes=20)
+        twentyMinutesAgo = datetime.now() - timedelta(minutes=1)
         return self.time < twentyMinutesAgo
 
 
@@ -19,6 +19,10 @@ class WattCache:
 
     def __init__(self, name = './cache'):
         self.file_name = name
+        self.create()
+
+    def create(self):
+        open(self.file_name, "a+").close()
 
     def save(self, watt_report):
         with open(self.file_name, "r+") as file:
