@@ -12,7 +12,7 @@
       type="number"
       v-model="updateInterval"
     />
-    <input type="checkbox" :checked="deleted ? true : false" /> Deleted?
+    <input v-model="deleted" type="checkbox" :checked="deleted ? true : false" /> Deleted?
     <p>{{ message }}</p>
     <LoadingRoller v-if="loading" />
     <span class="buttons" v-else>
