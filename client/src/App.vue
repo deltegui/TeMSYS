@@ -9,6 +9,7 @@
         <p>{{store.token.role}}</p>
       </div>
       <router-link to="/">Overview</router-link>
+      <router-link to="/api/doc">Api Documentation</router-link>
       <span v-if="!!store.token">
         <div v-if="store.token.role === 'admin'">
           <router-link to="/useradmin">User Admin</router-link>

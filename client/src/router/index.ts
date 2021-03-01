@@ -6,6 +6,7 @@ import UserAdmin from '../views/UserAdmin.vue';
 import SensorAdmin from '../views/SensorAdmin.vue';
 import Historic from '../views/Historic.vue';
 import TypesAdmin from '../views/TypesAdmin.vue';
+import ApiDoc from '../views/ApiDoc.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -42,6 +43,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/historic',
     name: 'Historic',
     component: Historic,
+  },
+  {
+    path: '/api/doc',
+    name: 'ApiDoc',
+    component: ApiDoc,
   },
 ];
 
