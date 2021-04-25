@@ -17,7 +17,6 @@ EXPOSE 3000
 COPY --from=golang-builder /build/temsys /
 COPY ./back/dev.example.json /dev.json
 COPY ./back/ascii-art.ans /
-#RUN mkdir /build/public
 COPY --from=client-builder /build/dist/ /static/
 RUN mkdir /data
 ENV CONFIG_TLSCRT=/data/server.crt
