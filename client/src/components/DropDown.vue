@@ -21,6 +21,16 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 
+export type DropDownElement = {
+  checked?: boolean;
+  name: string;
+};
+
+type Data = {
+  selected: string[];
+  dropdownOpen: boolean;
+};
+
 export default defineComponent({
   props: {
     title: {
@@ -32,14 +42,11 @@ export default defineComponent({
       default: 'checkbox',
     },
     elements: {
-      type: Array as () => { checked: boolean; name: string }[],
+      type: Array as () => DropDownElement[],
       required: true,
     },
   },
-  data(): {
-  selected: string[];
-  dropdownOpen: boolean;
-  } {
+  data(): Data {
     return {
       selected: [],
       dropdownOpen: false,

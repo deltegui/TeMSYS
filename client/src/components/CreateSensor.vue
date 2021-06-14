@@ -29,20 +29,22 @@ import { defineComponent } from 'vue';
 import ReportTypeSelection from './ReportTypeSelection.vue';
 import LoadingRoller from './LoadingRoller.vue';
 
-export default defineComponent({
-  name: 'CreateSensor',
-  components: {
-    LoadingRoller,
-    ReportTypeSelection,
-  },
-  data(): {
+type Data = {
   name: string;
   ip: string;
   updateInterval: string;
   reportTypes: string[];
   loading: boolean;
   message: string;
-  } {
+};
+
+export default defineComponent({
+  name: 'CreateSensor',
+  components: {
+    LoadingRoller,
+    ReportTypeSelection,
+  },
+  data(): Data {
     return {
       name: '',
       ip: '',

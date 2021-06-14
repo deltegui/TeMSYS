@@ -5,7 +5,11 @@
 <script lang="ts">
 import { reportService } from '@/services';
 import { defineComponent, PropType } from 'vue';
-import DropDown from './DropDown.vue';
+import DropDown, { DropDownElement } from './DropDown.vue';
+
+type Data = {
+  elements: DropDownElement[];
+};
 
 export default defineComponent({
   components: { DropDown },
@@ -15,9 +19,7 @@ export default defineComponent({
       default: () => Promise.resolve([]),
     },
   },
-  data(): {
-  elements: { checked?: boolean; name: string }[];
-  } {
+  data(): Data {
     return {
       elements: [],
     };
@@ -30,11 +32,18 @@ export default defineComponent({
       .then(this.loadInitialSelection)
       .then((initial) => {
         this.elements = this.elements
-          .filter((e) => initial.includes(e.name))
-          .map((e) => ({
-            name: e.name,
-            checked: true,
-          }));
+          .map(({ name }) => {
+            if (initial.includes(name)) {
+              return {
+                name,
+                checked: true,
+              };
+            }
+            return {
+              name,
+              checked: false,
+            };
+          });
       });
   },
 });
