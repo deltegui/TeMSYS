@@ -42,7 +42,7 @@ export default defineComponent({
 
   mounted() {
     const nav = document.getElementById('menubar');
-    const menuButton = document.getElementById('menu') as any;
+    const menuButton = document.getElementById('menu') as HTMLInputElement;
     window.addEventListener('click', (evt) => {
       if (evt.target === menuButton) return;
       if (evt.target !== nav) {

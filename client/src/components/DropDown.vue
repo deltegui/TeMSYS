@@ -1,10 +1,10 @@
 <template>
   <div class="dropdown_selection">
     <span>
-      <button class="temsys-btn temsys-gray" @click="onOpen">{{title}}</button>
+      <button ref="dropdownButton" class="temsys-btn temsys-gray" @click="onOpen">{{title}}</button>
       <span>Selected: {{selected.join(', ')}}</span>
     </span>
-    <div v-if="dropdownOpen" class="temsys-btn dropdown">
+    <div ref="dropdownMenu" v-if="dropdownOpen" class="temsys-btn dropdown">
       <div v-for="t in elements" :key="t">
         <input
           :name="title"
@@ -54,6 +54,10 @@ export default defineComponent({
   },
   mounted() {
     this.load();
+    this.registerCloseEvent();
+  },
+  unmounted() {
+    this.unregisterCloseEvent();
   },
   watch: {
     elements() {
@@ -62,6 +66,24 @@ export default defineComponent({
     },
   },
   methods: {
+    onClose(evt: MouseEvent) {
+      const button = this.$refs.dropdownButton;
+      const menu = this.$refs.dropdownMenu;
+      if (!button || !menu) return;
+      if (evt.target === button) return;
+      if (evt.target !== menu) {
+        this.dropdownOpen = false;
+      }
+    },
+
+    registerCloseEvent() {
+      window.addEventListener('click', this.onClose.bind(this));
+    },
+
+    unregisterCloseEvent() {
+      window.removeEventListener('click', this.onClose.bind(this));
+    },
+
     load() {
       this.elements
         .filter((e) => e.checked)
