@@ -147,7 +147,8 @@ nav > a:hover, div > a:hover {
 <style>
 :root {
   --bg-menu-color: #18181c;
-  --bg-main-color: #1a1a1d;
+  /*--bg-main-color: #1a1a1d;*/ /* gray color. It can cause contrast problems */
+  --bg-main-color: #10101d; /* kind of blue color. Better contrast */
   --bg-alternative-color: #202020;
   --fg-strong-color: #c3073f;
   --fg-semi-color: #a31c52;
