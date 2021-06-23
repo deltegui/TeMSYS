@@ -2,7 +2,7 @@
   <input type="checkbox" id="menu" />
   <label for="menu" onclick></label>
   <div id="container">
-    <nav id="menu">
+    <nav id="menubar">
       <img src="@/assets/logo.png" />
       <div v-if="!!store.token">
         <h2>{{store.token.owner}}</h2>
@@ -39,6 +39,18 @@ export default defineComponent({
       store: useState(),
     };
   },
+
+  mounted() {
+    const nav = document.getElementById('menubar');
+    const menuButton = document.getElementById('menu') as any;
+    window.addEventListener('click', (evt) => {
+      if (evt.target === menuButton) return;
+      if (evt.target !== nav) {
+        menuButton.checked = false;
+      }
+    });
+  },
+
   methods: {
     onLogout() {
       userService.logout();
