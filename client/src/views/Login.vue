@@ -5,6 +5,7 @@
       <h1>Temsys</h1>
       <div class="temsys-form">
         <input
+          id="inputName"
           class="temsys-input"
           type="text"
           placeholder="Name"
@@ -30,6 +31,7 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable no-unused-expressions */
 import { defineComponent } from 'vue';
 import { useState } from '@/store';
 import { userService } from '@/services';
@@ -45,6 +47,7 @@ export default defineComponent({
     };
   },
   mounted() {
+    document.getElementById('inputName')?.focus();
     if (this.store?.token) {
       this.$router.push('/panel');
     }

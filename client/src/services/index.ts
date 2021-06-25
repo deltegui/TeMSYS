@@ -18,4 +18,4 @@ export const reportService = new ReportService(reportRepo, sensorRepo);
 export const sensorService = new SensorService(sensorRepo);
 export const chartService = internalChartService;
 
-onTokenExpired(userService.logout);
+onTokenExpired(userService.logout.bind(userService));

@@ -1,6 +1,6 @@
 <template>
   <input type="checkbox" id="menu" />
-  <label for="menu" onclick></label>
+  <label id="labelMenu" for="menu" onclick></label>
   <div id="container">
     <nav id="menubar">
       <img src="@/assets/logo.png" />
@@ -41,17 +41,24 @@ export default defineComponent({
   },
 
   mounted() {
-    const nav = document.getElementById('menubar');
-    const menuButton = document.getElementById('menu') as HTMLInputElement;
-    window.addEventListener('click', (evt) => {
-      if (evt.target === menuButton) return;
-      if (evt.target !== nav) {
-        menuButton.checked = false;
-      }
-    });
+    window.addEventListener('click', this.onMenuClick.bind(this));
+  },
+
+  unmounted() {
+    window.removeEventListener('click', this.onMenuClick.bind(this));
   },
 
   methods: {
+    onMenuClick(evt: MouseEvent) {
+      const nav = document.getElementById('menubar');
+      const menuButton = document.getElementById('menu') as HTMLInputElement;
+      const label = document.getElementById('labelMenu');
+      if (evt.target === label || evt.target === menuButton || evt.target === nav) {
+        return;
+      }
+      menuButton.checked = false;
+    },
+
     onLogout() {
       userService.logout();
       this.$router.push('/');
