@@ -84,7 +84,7 @@ func readType(req *http.Request) string {
 func readTrim(req *http.Request) int {
 	trimStr, err := getQueryFrom(req, "trim")
 	if err != nil {
-		trimStr = "100"
+		trimStr = "200"
 	}
 	trim, err := strconv.Atoi(trimStr)
 	if err != nil {

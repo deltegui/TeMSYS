@@ -10,19 +10,42 @@ import { defineComponent } from 'vue';
 import { Report } from '@/services/models';
 import { reportService } from '@/services';
 
+enum Month {
+  JANUARY,
+  FEBRUARY,
+  MARCH,
+  APIRL,
+  MAY,
+  JUNE,
+  JULY,
+  AUGUST,
+  SEPTEMBER,
+  OCTOBER,
+  NOBEMBER,
+  DICEMBER,
+}
+
+function isWinter(month: number) {
+  return month === Month.DICEMBER || (month >= Month.JANUARY && month < Month.MARCH);
+}
+
+const isSummer = (month: number) => month >= Month.JUNE && month < Month.SEPTEMBER;
+const isSpring = (month: number) => month >= Month.MARCH && month < Month.JUNE;
+const isAutumn = (month: number) => month >= Month.SEPTEMBER && month < Month.DICEMBER;
+
 function getCurrentSeasonName(): string {
   const now = new Date();
   const month = now.getMonth();
-  if (month >= 2 && month < 5) {
+  if (isSpring(month)) {
     return 'spring';
   }
-  if (month >= 5 && month < 8) {
+  if (isSummer(month)) {
     return 'summer';
   }
-  if (month >= 8 && month < 11) {
+  if (isAutumn(month)) {
     return 'autumn';
   }
-  if (month === 11 || (month >= 0 && month < 2)) {
+  if (isWinter(month)) {
     return 'winter';
   }
   return 'spring';
