@@ -1,0 +1,12 @@
+/Users/diego/code/TeMSYS/back-evo/domain/bin/Debug/net5.0/domain.deps.json
+/Users/diego/code/TeMSYS/back-evo/domain/bin/Debug/net5.0/domain.dll
+/Users/diego/code/TeMSYS/back-evo/domain/bin/Debug/net5.0/ref/domain.dll
+/Users/diego/code/TeMSYS/back-evo/domain/bin/Debug/net5.0/domain.pdb
+/Users/diego/code/TeMSYS/back-evo/domain/obj/Debug/net5.0/domain.csproj.AssemblyReference.cache
+/Users/diego/code/TeMSYS/back-evo/domain/obj/Debug/net5.0/domain.GeneratedMSBuildEditorConfig.editorconfig
+/Users/diego/code/TeMSYS/back-evo/domain/obj/Debug/net5.0/domain.AssemblyInfoInputs.cache
+/Users/diego/code/TeMSYS/back-evo/domain/obj/Debug/net5.0/domain.AssemblyInfo.cs
+/Users/diego/code/TeMSYS/back-evo/domain/obj/Debug/net5.0/domain.csproj.CoreCompileInputs.cache
+/Users/diego/code/TeMSYS/back-evo/domain/obj/Debug/net5.0/domain.dll
+/Users/diego/code/TeMSYS/back-evo/domain/obj/Debug/net5.0/ref/domain.dll
+/Users/diego/code/TeMSYS/back-evo/domain/obj/Debug/net5.0/domain.pdb
