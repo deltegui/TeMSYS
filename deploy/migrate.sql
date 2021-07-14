@@ -1,3 +1,4 @@
+-- For MySQL
 use temsys;
 show tables;
 describe reports;

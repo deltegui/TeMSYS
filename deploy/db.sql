@@ -1,3 +1,5 @@
+-- Tested on MySQL. Not tested on PostgreSQL!
+
 create database if not exists temsys;
 use temsys;
 
