@@ -1,3 +1,4 @@
+version: "3.3"
 services:
     web:
         build: .
@@ -5,20 +6,20 @@ services:
         ports:
             - "3000:3000"
         links:
-            - mariadb
+            - postgres
         depends_on:
-            - mariadb
+            - postgres
         environment:
-            - CONFIG_DBNAME=temsys:temsys@tcp(mariadb:3306)/temsys
+            - CONFIG_DBNAME=host=postgres port=5432 user=temsys password=temsys dbname=temsys sslmode=disable
             - CONFIG_URL=0.0.0.0:3000
             - CONFIG_JWTKEY=blablamykeyblabla
-            - CONFIG_DBDRIVER=mysql
+            - CONFIG_DBDRIVER=postgres
             - CONFIG_CORS=localhost:3000
         volumes:
             - ./temsysdata:/data
 
-    mariadb:
-      image: "postgres:13.3"
+    postgres:
+        image: "postgres:13.3"
         restart: always
         volumes:
             - ./db:/var/lib/postgresql/data

@@ -1,0 +1,1 @@
+sudo docker exec -t temsys_postgres_1 pg_dump -d temsys -U temsys > ./temsysp$(date +%Y-%m-%d).sql
