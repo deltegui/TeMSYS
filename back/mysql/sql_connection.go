@@ -1,13 +1,12 @@
 package mysql
 
 import (
-	"fmt"
 	"log"
 	"temsys/configuration"
 
 	// Required to connect to msyql
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 )
 
 // Connect to msyql using a configuration and checks the connection.
@@ -20,11 +19,11 @@ func Connect(config configuration.Configuration) *sqlx.DB {
 }
 
 func connect(config configuration.Configuration) *sqlx.DB {
-	db, err := sqlx.Open(config.DatabaseDriver, fmt.Sprintf("%s?parseTime=true", config.Database))
+	db, err := sqlx.Open(config.DatabaseDriver, config.Database)
 	if err != nil {
 		log.Fatalln("Error creating connection to database: ", err)
 	}
-	log.Printf("Connected to %s, using %s\n", config.Database, config.DatabaseDriver)
+	log.Printf("Connected to '%s', using %s\n", config.Database, config.DatabaseDriver)
 	return db
 }
 

@@ -21,7 +21,6 @@ func New(signKey string) Tokenizer {
 
 // Tokenize a user using JWT to create a Token
 func (t Tokenizer) Tokenize(user temsys.User) temsys.Token {
-	const hoursToExpire int = 5
 	expiration := time.Now().Add(time.Hour * 5)
 	token := jwt.New(jwt.GetSigningMethod("HS256"))
 	token.Claims["owner"] = user.Name

@@ -20,7 +20,7 @@ func NewUserRepo(db *sqlx.DB) SQLUserRepository {
 // Save a user. If something goes wrong (including not finding the requested user)
 // it returns an error.
 func (repo SQLUserRepository) Save(user temsys.User) error {
-	insert := "insert into users (name, password, role) values (?, ?, ?)"
+	insert := "insert into users (name, password, role) values ($1, $2, $3)"
 	_, err := repo.db.Exec(insert, user.Name, user.Password, user.Role)
 	return err
 }
@@ -28,7 +28,7 @@ func (repo SQLUserRepository) Save(user temsys.User) error {
 // GetByName a user. Returns a valid user or an error if something goes wrong,
 // including the user with the requested name doesnt exists.
 func (repo SQLUserRepository) GetByName(name string) (temsys.User, error) {
-	selectQuery := "select name, password, role from users where name = ?"
+	selectQuery := "select name, password, role from users where name = $1"
 	var user temsys.User
 	if err := repo.db.Get(&user, selectQuery, name); err != nil {
 		fmt.Println(err)
@@ -39,7 +39,7 @@ func (repo SQLUserRepository) GetByName(name string) (temsys.User, error) {
 
 // Delete a user identified by name.
 func (repo SQLUserRepository) Delete(name string) error {
-	delete := "delete from users where name = ?"
+	delete := "delete from users where name = $1"
 	_, err := repo.db.Exec(delete, name)
 	return err
 }

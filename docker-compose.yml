@@ -18,13 +18,12 @@ services:
             - ./temsysdata:/data
 
     mariadb:
-        image: "mariadb:10.5.8-focal"
+      image: "postgres:13.3"
         restart: always
         volumes:
-            - ./db:/var/lib/mysql
+            - ./db:/var/lib/postgresql/data
             - ./entrypoint:/docker-entrypoint-initdb.d
         environment:
-            - MYSQL_ROOT_PASSWORD=root
-            - MYSQL_DATABASE=temsys
-            - MYSQL_USER=temsys
-            - MYSQL_PASSWORD=temsys
+            - POSTGRES_DB=temsys
+            - POSTGRES_USER=temsys
+            - POSTGRES_PASSWORD=temsys

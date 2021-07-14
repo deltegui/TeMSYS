@@ -21,7 +21,7 @@ func NewReportTypeRepo(db *sqlx.DB) SqlxReportTypeRepo {
 
 // Save a ReportType. Rarely returns an error.
 func (repo SqlxReportTypeRepo) Save(rType string) error {
-	insert := "insert into report_types values(?)"
+	insert := "insert into report_types values($1)"
 	_, err := repo.db.Exec(insert, rType)
 	return err
 }
@@ -52,7 +52,7 @@ func NewReportRepo(db *sqlx.DB) temsys.ReportRepo {
 
 // Save a report.
 func (repo SqlxReportRepo) Save(report temsys.Report) {
-	insert := "insert into reports (sensor, type, value, report_date) values(?, ?, ?, ?)"
+	insert := "insert into reports (sensor, type, value, report_date) values($1, $2, $3, $4)"
 	_, err := repo.db.Exec(insert, report.SensorName, report.ReportType, report.Value, report.Date.UTC())
 	if err != nil {
 		log.Fatal(err)
@@ -62,7 +62,7 @@ func (repo SqlxReportRepo) Save(report temsys.Report) {
 // GetAll available reports in the system.
 func (repo SqlxReportRepo) GetAll() []temsys.Report {
 	var reports []temsys.Report
-	err := repo.db.Select(&reports, "select r.sensor, r.type, r.value, r.report_date from reports as r, sensors as s where s.name like r.sensor and s.deleted = 0")
+	err := repo.db.Select(&reports, "select r.sensor, r.type, r.value, r.report_date from reports as r, sensors as s where s.name like r.sensor and s.deleted = false")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -78,10 +78,10 @@ func (repo SqlxReportRepo) GetFiltered(filter temsys.ReportFilter) []temsys.Repo
 	var reports []temsys.Report
 	var err error
 	if len(filter.Type) == 0 {
-		query := "select r.sensor, r.type, r.value, r.report_date from reports as r, sensors as s where report_date > ? and report_date < ? and s.name like r.sensor and s.deleted = 0 and r.sensor = ? order by r.report_date desc limit ?"
+		query := "select r.sensor, r.type, r.value, r.report_date from reports as r, sensors as s where report_date > $1 and report_date < $2 and s.name like r.sensor and s.deleted = false and r.sensor = $3 order by r.report_date desc limit $4"
 		err = repo.db.Select(&reports, query, filter.From.UTC().Format(dateFormat), filter.To.UTC().Format(dateFormat), filter.SensorName, filter.Trim)
 	} else {
-		query := "select r.sensor, r.type, r.value, r.report_date from reports as r, sensors as s where report_date > ? and report_date < ? and r.type = ? and s.name like r.sensor and s.deleted = 0 and r.sensor = ? order by r.report_date desc limit ?;"
+		query := "select r.sensor, r.type, r.value, r.report_date from reports as r, sensors as s where report_date > $1 and report_date < $2 and r.type = $3 and s.name like r.sensor and s.deleted = false and r.sensor = $4 order by r.report_date desc limit $5;"
 		err = repo.db.Select(&reports, query, filter.From.UTC().Format(dateFormat), filter.To.UTC().Format(dateFormat), filter.Type, filter.SensorName, filter.Trim)
 	}
 	if err != nil {
@@ -97,9 +97,10 @@ func (repo SqlxReportRepo) GetFiltered(filter temsys.ReportFilter) []temsys.Repo
 func (repo SqlxReportRepo) GetFilteredAverage(filter temsys.ReportFilter) []temsys.Report {
 	dateFormat := "2006-01-02 15:04:05"
 	var reports []temsys.Report
-	query := "select 'average' as sensor, r.type, avg(r.value) as value, now() as report_date from reports as r, sensors as s where report_date > ? and report_date < ? and s.name like r.sensor and s.deleted = 0 group by type"
+	query := "select 'average' as sensor, r.type, avg(r.value) as value, now() as report_date from reports as r, sensors as s where report_date > $1 and report_date < $2 and s.name like r.sensor and s.deleted = false group by type"
 	err := repo.db.Select(&reports, query, filter.From.UTC().Format(dateFormat), filter.To.UTC().Format(dateFormat))
 	if err != nil {
+		log.Println("HOLA")
 		log.Fatal(err)
 	}
 	if reports == nil {
