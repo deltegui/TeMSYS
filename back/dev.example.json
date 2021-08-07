@@ -1,0 +1,10 @@
+{
+    "ListenURL": "localhost:3000",
+    "JWTKey": "blablamykeyblabla",
+    "DatabaseDriver": "postgres",
+    "Database": "host=localhost port=5432 user=root password=root dbname=temsys sslmode=disable",
+    "TLSKEY": "../server.key",
+    "TLSCRT": "../server.crt",
+    "TLSEnabled": false,
+    "CORS":  "http://localhost:8080"
+}
