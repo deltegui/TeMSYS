@@ -10,6 +10,7 @@
           :name="title"
           :checked="selected.includes(t.name) ? true : false || t.checked"
           :type="type"
+          :value="title"
           @change="() => onCheck(t.name)"
         />
         {{t.name}}
@@ -67,13 +68,15 @@ export default defineComponent({
   },
   methods: {
     onClose(evt: MouseEvent) {
-      const button = this.$refs.dropdownButton;
-      const menu = this.$refs.dropdownMenu;
-      if (!button || !menu) return;
-      if (evt.target === button) return;
-      if (evt.target !== menu) {
-        this.dropdownOpen = false;
-      }
+      setTimeout(() => {
+        const button = this.$refs.dropdownButton;
+        const menu = this.$refs.dropdownMenu;
+        if (!button || !menu) return;
+        if (evt.target === button) return;
+        if (evt.target !== menu) {
+          this.dropdownOpen = false;
+        }
+      }, 100);
     },
 
     registerCloseEvent() {
@@ -92,7 +95,6 @@ export default defineComponent({
 
     onOpen() {
       this.dropdownOpen = !this.dropdownOpen;
-      this.$emit('selection', this.selected);
     },
 
     onCheck(selection: string) {
@@ -106,6 +108,7 @@ export default defineComponent({
         this.selected = [];
       }
       this.selected.push(selection);
+      this.$emit('selection', this.selected);
     },
   },
 });

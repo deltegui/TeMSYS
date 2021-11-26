@@ -26,9 +26,7 @@ import { defineComponent } from 'vue';
 import DateTimeInput from './DateTimeInput.vue';
 import DropDown from './DropDown.vue';
 
-export default defineComponent({
-  components: { DropDown, DateTimeInput },
-  data(): {
+type Data = {
   error: string;
   from: Date;
   to: Date;
@@ -37,7 +35,11 @@ export default defineComponent({
   sensorStore: Sensor[];
   availableSensors: { name: string; checked?: boolean }[];
   availableReports: { name: string; checked?: boolean }[];
-  } {
+};
+
+export default defineComponent({
+  components: { DropDown, DateTimeInput },
+  data(): Data {
     return {
       error: '',
       from: new Date(),

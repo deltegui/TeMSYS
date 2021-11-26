@@ -86,6 +86,7 @@ export default defineComponent({
   border-style: solid;
   border-width: 2px;
   border-color: var(--fg-weak-color);
+  border-radius: 5px;
   padding: 10px;
   height: 300px;
 }

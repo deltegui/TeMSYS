@@ -1,26 +1,10 @@
-version: "3.3"
+version: "3.9"
 services:
-    web:
-        build: .
-        restart: on-failure
-        ports:
-            - "3000:3000"
-        links:
-            - postgres
-        depends_on:
-            - postgres
-        environment:
-            - CONFIG_DBNAME=host=postgres port=5432 user=temsys password=temsys dbname=temsys sslmode=disable
-            - CONFIG_URL=0.0.0.0:3000
-            - CONFIG_JWTKEY=blablamykeyblabla
-            - CONFIG_DBDRIVER=postgres
-            - CONFIG_CORS=localhost:3000
-        volumes:
-            - ./temsysdata:/data
-
-    postgres:
+    mariadb:
         image: "postgres:13.3"
         restart: always
+        ports:
+            - "5432:5432"
         volumes:
             - ./db:/var/lib/postgresql/data
             - ./entrypoint:/docker-entrypoint-initdb.d
