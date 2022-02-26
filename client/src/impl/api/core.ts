@@ -1,6 +1,6 @@
 /* eslint-disable no-throw-literal */
 
-const apiURL = (process.env.NODE_ENV === 'production') ? 'https://192.168.1.31:8080/api' : 'http://localhost:3000/api';
+const apiURL = (process.env.NODE_ENV === 'production') ? 'https://192.168.1.19:8080/api' : 'http://localhost:3000/api';
 
 const tokenExpiredEventHandlers: TokenExpiredHandler[] = [];
 
