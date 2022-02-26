@@ -156,13 +156,7 @@ func NewGetAllSensorsCase(sensorRepo SensorRepo) UseCase {
 // Exec GetAllSensors use case.
 func (useCase GetAllSensorsCase) Exec(presenter Presenter, req UseCaseRequest) {
 	getAllReq := req.(GetAllSensorsRequest)
-	var sensors []Sensor
-	var err error
-	if getAllReq.WantDeleted {
-		sensors, err = useCase.sensorRepo.GetAll(WithDeletedSensors)
-	} else {
-		sensors, err = useCase.sensorRepo.GetAll(WithoutDeletedSensors)
-	}
+	sensors, err := useCase.sensorRepo.GetAll(ShowDeleted(getAllReq.WantDeleted))
 	if err != nil {
 		presenter.PresentError(SensorNotFoundErr)
 		return

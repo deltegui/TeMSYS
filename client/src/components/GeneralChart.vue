@@ -14,6 +14,9 @@ import {
 import { defineComponent } from 'vue';
 
 const canvasID = 'general-chart';
+type Data = {
+  chart: SensorChart | undefined;
+};
 
 export default defineComponent({
   name: 'GeneralChart',
@@ -23,9 +26,7 @@ export default defineComponent({
       required: true,
     },
   },
-  data(): {
-  chart: SensorChart | undefined;
-  } {
+  data(): Data {
     return {
       chart: undefined,
     };
