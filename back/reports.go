@@ -53,6 +53,7 @@ type ScheluderJob func()
 // a goroutine.
 type ReportScheluder interface {
 	AddJobEvery(ScheluderJob, int64)
+	AddOneTime(ScheluderJob, time.Time)
 	Start()
 	Stop()
 }
