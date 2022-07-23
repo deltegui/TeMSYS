@@ -25,12 +25,27 @@ func parseInterval(interval int64) string {
 	return fmt.Sprintf("*/%d", interval)
 }
 
+func createCronExpr(interval int64) string {
+	minutes := parseInterval(interval % 60)
+	return fmt.Sprintf("%s * * * *", minutes)
+}
+
 // AddJobEvery interval.
 func (scheluder CronScheluder) AddJobEvery(job temsys.ScheluderJob, interval int64) {
-	minutes := parseInterval(interval % 60)
-	cronExpr := fmt.Sprintf("%s * * * *", minutes)
+	cronExpr := createCronExpr(interval)
 	log.Printf("One job have %d inerval, traduced to cron expression: %s\n", interval, cronExpr)
 	scheluder.cron.AddFunc(cronExpr, job)
+}
+
+// AddJobOnce adds a job that executes only one time
+func (scheluder CronScheluder) AddJobOnce(executeJob temsys.ScheluderJob, moment int64) {
+	cronExpr := createCronExpr(moment)
+	log.Printf("Please execute a refresh configuration job using this cron expression: %s\n", cronExpr)
+	var id cron.EntryID
+	id, _ = scheluder.cron.AddFunc(cronExpr, func() {
+		executeJob()
+		scheluder.cron.Remove(id)
+	})
 }
 
 // Start cron scheduler.

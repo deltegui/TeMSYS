@@ -87,3 +87,5 @@ func AllSensorsAverageHandler(allSensorsNowAverage temsys.UseCase) http.HandlerF
 		allSensorsNowAverage.Exec(presenter, temsys.EmptyRequest)
 	}
 }
+
+func RecieveSensorDataHandler()

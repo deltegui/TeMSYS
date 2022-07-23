@@ -19,6 +19,10 @@ type SensorConnector interface {
 	ReadDataFor(Sensor) ([]Report, error)
 }
 
+type SensorConfigurer interface {
+	Configure(old, new Sensor)
+}
+
 // Sensor is a physical device that reads envorment
 // values. It will return those values as reports of
 // different types.
