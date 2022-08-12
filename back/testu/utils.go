@@ -6,6 +6,7 @@ import (
 	"reflect"
 	"runtime"
 	"testing"
+	"time"
 )
 
 // assert fails the test if the condition is false.
@@ -52,4 +53,12 @@ func (presenter *FakePresenter) Present(data interface{}) {
 
 func (presenter *FakePresenter) PresentError(data error) {
 	presenter.DataErr = data
+}
+
+func TimeParseOrPanic(value string) time.Time {
+	time, err := time.Parse(time.RFC3339, value)
+	if err != nil {
+		panic(err)
+	}
+	return time
 }

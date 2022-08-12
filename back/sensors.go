@@ -60,6 +60,11 @@ type SensorRepo interface {
 	Update(sensor Sensor) bool
 }
 
+type ReportCache interface {
+	Update(report Report) error
+	GetReportsForSensor(name string) ([]Report, error)
+}
+
 // SensorBuilder builds sensors. This thing exists because sensors are difficult to
 // create, due it have a SensorConnector.
 type SensorBuilder interface {

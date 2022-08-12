@@ -55,14 +55,6 @@ func (scheduler fakeReportScheduler) AddJobEvery(temsys.ScheluderJob, int64) {}
 func (scheduler fakeReportScheduler) Start()                                 {}
 func (scheduler fakeReportScheduler) Stop()                                  {}
 
-func timeParseOrPanic(value string) time.Time {
-	time, err := time.Parse(time.RFC3339, value)
-	if err != nil {
-		panic(err)
-	}
-	return time
-}
-
 func reportsIgnoreTime(rr *[]temsys.Report) {
 	for i := range *rr {
 		r := &(*rr)[i]
@@ -72,16 +64,16 @@ func reportsIgnoreTime(rr *[]temsys.Report) {
 
 func TestGetFilteredReportsCase(t *testing.T) {
 	expectedFilter := temsys.ReportFilter{
-		From:       timeParseOrPanic("2020-01-02T01:01:01Z"),
-		To:         timeParseOrPanic("2020-01-03T01:01:01Z"),
+		From:       testu.TimeParseOrPanic("2020-01-02T01:01:01Z"),
+		To:         testu.TimeParseOrPanic("2020-01-03T01:01:01Z"),
 		Trim:       10,
 		Type:       "temperature",
 		SensorName: "habitacion",
 	}
 	caseReq := temsys.FilteredReportsBySensorRequest{
 		FilteredReportsRequest: temsys.FilteredReportsRequest{
-			From: timeParseOrPanic("2020-01-02T01:01:01Z"),
-			To:   timeParseOrPanic("2020-01-03T01:01:01Z"),
+			From: testu.TimeParseOrPanic("2020-01-02T01:01:01Z"),
+			To:   testu.TimeParseOrPanic("2020-01-03T01:01:01Z"),
 		},
 		Trim:       10,
 		Average:    false,
@@ -94,7 +86,7 @@ func TestGetFilteredReportsCase(t *testing.T) {
 			{
 				ReportType: "temperature",
 				SensorName: "habitacion",
-				Date:       timeParseOrPanic("2020-01-02T05:01:01Z"),
+				Date:       testu.TimeParseOrPanic("2020-01-02T05:01:01Z"),
 				Value:      20,
 			},
 		}
@@ -114,25 +106,25 @@ func TestGetFilteredReportsCase(t *testing.T) {
 			{
 				ReportType: "temperature",
 				SensorName: "habitacion",
-				Date:       timeParseOrPanic("2020-01-02T05:01:01Z"),
+				Date:       testu.TimeParseOrPanic("2020-01-02T05:01:01Z"),
 				Value:      20,
 			},
 			{
 				ReportType: "humidity",
 				SensorName: "habitacion",
-				Date:       timeParseOrPanic("2020-01-02T05:01:01Z"),
+				Date:       testu.TimeParseOrPanic("2020-01-02T05:01:01Z"),
 				Value:      68,
 			},
 			{
 				ReportType: "temperature",
 				SensorName: "habitacion",
-				Date:       timeParseOrPanic("2020-01-02T12:01:01Z"),
+				Date:       testu.TimeParseOrPanic("2020-01-02T12:01:01Z"),
 				Value:      25,
 			},
 			{
 				ReportType: "humidity",
 				SensorName: "habitacion",
-				Date:       timeParseOrPanic("2020-01-02T12:01:01Z"),
+				Date:       testu.TimeParseOrPanic("2020-01-02T12:01:01Z"),
 				Value:      70,
 			},
 		}
