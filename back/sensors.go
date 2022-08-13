@@ -295,6 +295,11 @@ type SensorNowCase struct {
 	sensorRepo SensorRepo
 }
 
+type SensorNowRequest struct {
+	UserRole Role
+	Sensor   string
+}
+
 // NewSensorNowCase creates a SensorNowCase.
 func NewSensorNowCase(sensorRepo SensorRepo) UseCase {
 	return SensorNowCase{
@@ -303,9 +308,9 @@ func NewSensorNowCase(sensorRepo SensorRepo) UseCase {
 }
 
 // Exec sensor now case.
-func (useCase SensorNowCase) Exec(presenter Presenter, req UseCaseRequest) {
-	sensorName := req.(string)
-	sensor, err := useCase.sensorRepo.GetByName(sensorName)
+func (useCase SensorNowCase) Exec(presenter Presenter, raw UseCaseRequest) {
+	req := raw.(SensorNowRequest)
+	sensor, err := useCase.sensorRepo.GetByName(req.Sensor)
 	if err != nil {
 		presenter.PresentError(SensorNotFoundErr)
 		return

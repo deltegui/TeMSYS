@@ -1,6 +1,7 @@
 package temsys_test
 
 import (
+	"fmt"
 	"temsys"
 	"temsys/testu"
 	"testing"
@@ -102,10 +103,56 @@ func TestSensorNowCase(t *testing.T) {
 		nowCase := temsys.NewSensorNowCase(&sensorRepo)
 		presenter := testu.FakePresenter{}
 
-		nowCase.Exec(&presenter, "salon")
+		nowCase.Exec(&presenter, temsys.SensorNowRequest{
+			UserRole: temsys.AdminRole,
+			Sensor:   "salon",
+		})
 
 		res := presenter.Data.([]temsys.ReportResponse)
 		testu.Equals(t, sensorRepo.getByNameInput, "salon")
 		testu.Equals(t, expected, res)
+	})
+
+	t.Run("Should fail if sensor not respond", func(t *testing.T) {
+		sensor.Connector = fakeSensorConnector{
+			err: fmt.Errorf("Fail to read"),
+		}
+		sensorRepo := fakeSensorRepo{
+			getByNameReturn: sensor,
+			getByNameErr:    nil,
+		}
+
+		nowCase := temsys.NewSensorNowCase(&sensorRepo)
+		presenter := testu.FakePresenter{}
+
+		nowCase.Exec(&presenter, temsys.SensorNowRequest{
+			UserRole: temsys.AdminRole,
+			Sensor:   "salon",
+		})
+
+		res := presenter.DataErr.(error)
+		testu.Equals(t, sensorRepo.getByNameInput, "salon")
+		testu.Equals(t, temsys.SensorNotRespondErr, res)
+	})
+
+	t.Run("Should fail if sensor does not exists", func(t *testing.T) {
+		sensor.Connector = fakeSensorConnector{
+			err: fmt.Errorf("Fail to read"),
+		}
+		sensorRepo := fakeSensorRepo{
+			getByNameErr: fmt.Errorf("Sensor not found"),
+		}
+
+		nowCase := temsys.NewSensorNowCase(&sensorRepo)
+		presenter := testu.FakePresenter{}
+
+		nowCase.Exec(&presenter, temsys.SensorNowRequest{
+			UserRole: temsys.AdminRole,
+			Sensor:   "salon",
+		})
+
+		res := presenter.DataErr.(error)
+		testu.Equals(t, sensorRepo.getByNameInput, "salon")
+		testu.Equals(t, temsys.SensorNotFoundErr, res)
 	})
 }
