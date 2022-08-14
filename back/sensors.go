@@ -61,8 +61,8 @@ type SensorRepo interface {
 }
 
 type ReportCache interface {
-	Update(report Report) error
-	GetReportsForSensor(name string) ([]Report, error)
+	Update(report []Report) error
+	GetForSensor(name string) ([]Report, error)
 }
 
 // SensorBuilder builds sensors. This thing exists because sensors are difficult to
@@ -295,11 +295,6 @@ type SensorNowCase struct {
 	sensorRepo SensorRepo
 }
 
-type SensorNowRequest struct {
-	UserRole Role
-	Sensor   string
-}
-
 // NewSensorNowCase creates a SensorNowCase.
 func NewSensorNowCase(sensorRepo SensorRepo) UseCase {
 	return SensorNowCase{
@@ -308,19 +303,80 @@ func NewSensorNowCase(sensorRepo SensorRepo) UseCase {
 }
 
 // Exec sensor now case.
-func (useCase SensorNowCase) Exec(presenter Presenter, raw UseCaseRequest) {
-	req := raw.(SensorNowRequest)
-	sensor, err := useCase.sensorRepo.GetByName(req.Sensor)
-	if err != nil {
-		presenter.PresentError(SensorNotFoundErr)
-		return
-	}
-	reports, err := sensor.GetCurrentState()
+func (useCase SensorNowCase) Exec(presenter Presenter, req UseCaseRequest) {
+	sensorName := req.(string)
+	reports, err := readDataFromSensor(sensorName, useCase.sensorRepo)
 	if err != nil {
 		presenter.PresentError(err)
 		return
 	}
 	presenter.Present(transformReportsToResponse(reports))
+}
+
+func readDataFromSensor(sensorName string, sensorRepo SensorRepo) ([]Report, error) {
+	sensor, err := sensorRepo.GetByName(sensorName)
+	if err != nil {
+		return nil, SensorNotFoundErr
+	}
+	reports, err := sensor.GetCurrentState()
+	if err != nil {
+		return nil, err
+	}
+	return reports, nil
+}
+
+type CachedSensorNowRequest struct {
+	UserRole Role
+	Sensor   string
+}
+
+type CachedSensorNowCase struct {
+	sensorRepo    SensorRepo
+	sensorNowCase UseCase
+	reportCache   ReportCache
+	cacheDelay    int
+}
+
+func NewCachedSensorNowCase(sensorRepo SensorRepo, cache ReportCache, delay int) UseCase {
+	return CachedSensorNowCase{
+		sensorRepo:    sensorRepo,
+		sensorNowCase: NewSensorNowCase(sensorRepo),
+		reportCache:   cache,
+		cacheDelay:    delay,
+	}
+}
+
+func (useCase CachedSensorNowCase) Exec(presenter Presenter, raw UseCaseRequest) {
+	req := raw.(CachedSensorNowRequest)
+	if req.UserRole == AdminRole {
+		useCase.sensorNowCase.Exec(presenter, req.Sensor)
+		return
+	}
+	reports, err := useCase.reportCache.GetForSensor(req.Sensor)
+	if err != nil {
+		presenter.PresentError(err)
+		return
+	}
+	if len(reports) == 0 {
+		useCase.updateCacheAndPresent(req.Sensor, presenter)
+		return
+	}
+	if reports[0].WasCreatedAgo(useCase.cacheDelay) {
+		useCase.updateCacheAndPresent(req.Sensor, presenter)
+		return
+	}
+	presenter.Present(transformReportsToResponse(reports))
+}
+
+func (useCase CachedSensorNowCase) updateCacheAndPresent(sensorName string, presenter Presenter) {
+	reports, err := readDataFromSensor(sensorName, useCase.sensorRepo)
+	if err != nil {
+		presenter.PresentError(err)
+		return
+	}
+	useCase.reportCache.Update(reports)
+	presenter.Present(transformReportsToResponse(reports))
+	return
 }
 
 // AllSensorNowCase reads information all sensors in the system.

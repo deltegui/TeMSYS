@@ -28,6 +28,11 @@ type Report struct {
 	Value      float32   `db:"value" json:"value"`
 }
 
+func (report Report) WasCreatedAgo(ago int) bool {
+
+	return true
+}
+
 // ReportFilter stores all information to filter reports using a ReportRepo.
 type ReportFilter struct {
 	From       time.Time
