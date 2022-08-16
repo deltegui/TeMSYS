@@ -5,6 +5,7 @@ import (
 	"temsys"
 	"temsys/testu"
 	"testing"
+	"time"
 )
 
 type fakeSensorRepo struct {
@@ -206,8 +207,11 @@ func TestCachedNowCase(t *testing.T) {
 			Value:      20.3,
 		},
 	}
+	fiveMinutes := 5 * time.Minute
+	inTime := time.Date(2022, time.January, 3, 13, 12, 1, 0, time.Now().Location())
+	outTime := time.Date(2022, time.January, 3, 13, 20, 1, 0, time.Now().Location())
 
-	t.Run("Should response only if you are admin", func(t *testing.T) {
+	t.Run("Should always make a sensor request if you are admin", func(t *testing.T) {
 		expected := []temsys.ReportResponse{
 			{
 				ReportType: "temperature",
@@ -230,8 +234,9 @@ func TestCachedNowCase(t *testing.T) {
 			getByNameReturn: sensor,
 			getByNameErr:    nil,
 		}
+		clock := testu.FakeClock{NowReturn: outTime}
 		cache := fakeReportCache{}
-		nowCase := temsys.NewCachedSensorNowCase(&sensorRepo, &cache, 5)
+		nowCase := temsys.NewCachedSensorNowCase(clock, &sensorRepo, &cache, fiveMinutes)
 		presenter := testu.FakePresenter{}
 
 		nowCase.Exec(&presenter, temsys.CachedSensorNowRequest{
@@ -271,7 +276,9 @@ func TestCachedNowCase(t *testing.T) {
 			getReturn: cachedReports,
 			getErr:    nil,
 		}
-		nowCase := temsys.NewCachedSensorNowCase(&sensorRepo, &cache, 5)
+		clock := testu.FakeClock{NowReturn: inTime}
+
+		nowCase := temsys.NewCachedSensorNowCase(clock, &sensorRepo, &cache, fiveMinutes)
 		presenter := testu.FakePresenter{}
 
 		nowCase.Exec(&presenter, temsys.CachedSensorNowRequest{
@@ -311,7 +318,8 @@ func TestCachedNowCase(t *testing.T) {
 			getReturn: cachedReports,
 			getErr:    nil,
 		}
-		nowCase := temsys.NewCachedSensorNowCase(&sensorRepo, &cache, 5)
+		clock := testu.FakeClock{NowReturn: outTime}
+		nowCase := temsys.NewCachedSensorNowCase(clock, &sensorRepo, &cache, 5*time.Minute)
 		presenter := testu.FakePresenter{}
 
 		nowCase.Exec(&presenter, temsys.CachedSensorNowRequest{
@@ -321,6 +329,7 @@ func TestCachedNowCase(t *testing.T) {
 
 		res := presenter.Data.([]temsys.ReportResponse)
 		testu.Equals(t, cache.getInput, "salon")
+		testu.Equals(t, cache.updateInput, expected)
 		testu.Equals(t, expected, res)
 	})
 }

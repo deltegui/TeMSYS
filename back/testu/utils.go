@@ -62,3 +62,11 @@ func TimeParseOrPanic(value string) time.Time {
 	}
 	return time
 }
+
+type FakeClock struct {
+	NowReturn time.Time
+}
+
+func (c FakeClock) Now() time.Time {
+	return c.NowReturn
+}

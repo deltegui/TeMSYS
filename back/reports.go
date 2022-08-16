@@ -28,9 +28,8 @@ type Report struct {
 	Value      float32   `db:"value" json:"value"`
 }
 
-func (report Report) WasCreatedAgo(ago int) bool {
-
-	return true
+func (report Report) IsOlder(clock Clock, ago time.Duration) bool {
+	return report.Date.Before(clock.Now().Add(-ago))
 }
 
 // ReportFilter stores all information to filter reports using a ReportRepo.

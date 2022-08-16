@@ -334,15 +334,17 @@ type CachedSensorNowCase struct {
 	sensorRepo    SensorRepo
 	sensorNowCase UseCase
 	reportCache   ReportCache
-	cacheDelay    int
+	cacheDelay    time.Duration
+	clock         Clock
 }
 
-func NewCachedSensorNowCase(sensorRepo SensorRepo, cache ReportCache, delay int) UseCase {
+func NewCachedSensorNowCase(clock Clock, sensorRepo SensorRepo, cache ReportCache, delay time.Duration) UseCase {
 	return CachedSensorNowCase{
 		sensorRepo:    sensorRepo,
 		sensorNowCase: NewSensorNowCase(sensorRepo),
 		reportCache:   cache,
 		cacheDelay:    delay,
+		clock:         clock,
 	}
 }
 
@@ -361,7 +363,7 @@ func (useCase CachedSensorNowCase) Exec(presenter Presenter, raw UseCaseRequest)
 		useCase.updateCacheAndPresent(req.Sensor, presenter)
 		return
 	}
-	if reports[0].WasCreatedAgo(useCase.cacheDelay) {
+	if reports[0].IsOlder(useCase.clock, useCase.cacheDelay) {
 		useCase.updateCacheAndPresent(req.Sensor, presenter)
 		return
 	}
@@ -376,7 +378,6 @@ func (useCase CachedSensorNowCase) updateCacheAndPresent(sensorName string, pres
 	}
 	useCase.reportCache.Update(reports)
 	presenter.Present(transformReportsToResponse(reports))
-	return
 }
 
 // AllSensorNowCase reads information all sensors in the system.
@@ -405,12 +406,14 @@ func (useCase AllSensorNowCase) Exec(presenter Presenter, req UseCaseRequest) {
 // calculates the average of each report type.
 type AllSensorNowAverageCase struct {
 	sensorRepo SensorRepo
+	clock      Clock
 }
 
 // NewAllSensorNowAverageCase creates all sensor now average.
-func NewAllSensorNowAverageCase(sensorRepo SensorRepo) UseCase {
+func NewAllSensorNowAverageCase(clock Clock, sensorRepo SensorRepo) UseCase {
 	return AllSensorNowAverageCase{
 		sensorRepo,
+		clock,
 	}
 }
 

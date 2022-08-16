@@ -1,6 +1,9 @@
 package temsys
 
-import "log"
+import (
+	"log"
+	"time"
+)
 
 // Presenter is anything that have de hability to represent data or errors to the user.
 type Presenter interface {
@@ -13,6 +16,19 @@ type UseCaseRequest interface{}
 
 // UseCaseResponse is anything returned by the computation of a UseCase.
 type UseCaseResponse interface{}
+
+// Clock gives you the time now. Just like you look your watch ;-). Mainly used
+// to support testing (mock time)
+type Clock interface {
+	Now() time.Time
+}
+
+// Default Clock implementation
+type TimeClock struct{}
+
+func (c TimeClock) Now() time.Time {
+	return time.Now()
+}
 
 // EmptyRequest is the UseCaseRequest to use if you dont want to pass anything to a UseCase.
 // Use this instead calling it with nil. Improves readability.
