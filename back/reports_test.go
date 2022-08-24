@@ -152,11 +152,11 @@ func TestGetFilteredReportsCase(t *testing.T) {
 		filteredCase.Exec(&presenter, averageReq)
 		res := presenter.Data.([]temsys.Report)
 		reportsIgnoreTime(&res)
-		testu.Equals(t, res, expectedResult)
+		testu.EqualsSlice(t, res, expectedResult)
 	})
 }
 
-func TestReportIsOlder(t *testing.T) {
+func TestReportIsRecent(t *testing.T) {
 	//               Year  Month         D  H   M   S  s
 	now := time.Date(2022, time.January, 3, 13, 12, 1, 0, time.Now().Location())
 	clock := testu.FakeClock{NowReturn: now}
@@ -166,5 +166,5 @@ func TestReportIsOlder(t *testing.T) {
 		Date:       testu.TimeParseOrPanic("2022-01-03T13:01:01Z"),
 		Value:      20,
 	}
-	testu.Equals(t, report.IsOlder(clock, 5*time.Minute), true)
+	testu.Equals(t, report.IsRecent(clock, 5*time.Minute), true)
 }

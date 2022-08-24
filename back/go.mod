@@ -1,6 +1,6 @@
 module temsys
 
-go 1.15
+go 1.18
 
 require (
 	github.com/deltegui/configloader v1.2.1

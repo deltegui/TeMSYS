@@ -28,7 +28,7 @@ type Report struct {
 	Value      float32   `db:"value" json:"value"`
 }
 
-func (report Report) IsOlder(clock Clock, ago time.Duration) bool {
+func (report Report) IsRecent(clock Clock, ago time.Duration) bool {
 	previous := clock.Now().Add(-ago)
 	return report.Date.After(previous)
 }

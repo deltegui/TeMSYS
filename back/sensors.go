@@ -363,7 +363,7 @@ func (useCase CachedSensorNowCase) Exec(presenter Presenter, raw UseCaseRequest)
 		useCase.updateCacheAndPresent(req.Sensor, presenter)
 		return
 	}
-	if reports[0].IsOlder(useCase.clock, useCase.cacheDelay) {
+	if !reports[0].IsRecent(useCase.clock, useCase.cacheDelay) {
 		useCase.updateCacheAndPresent(req.Sensor, presenter)
 		return
 	}

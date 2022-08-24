@@ -36,6 +36,25 @@ func Equals(tb testing.TB, exp, act interface{}) {
 	}
 }
 
+type Comparator func(exp, act interface{}) bool
+
+func EqualsSlice[T any](tb testing.TB, exp, act []T) {
+	for exp_element := range exp {
+		found := false
+		for act_element := range act {
+			if reflect.DeepEqual(exp_element, act_element) {
+				found = true
+				break
+			}
+		}
+		if !found {
+			_, file, line, _ := runtime.Caller(1)
+			fmt.Printf("\033[31m%s:%d:\n\n\texp: %#v\n\n\tgot: %#v\033[39m\n\n", filepath.Base(file), line, exp, act)
+			tb.FailNow()
+		}
+	}
+}
+
 type AlwaysValidValidator struct{}
 
 func (validator AlwaysValidValidator) Validate(interface{}) ([]string, error) {
