@@ -29,7 +29,8 @@ type Report struct {
 }
 
 func (report Report) IsOlder(clock Clock, ago time.Duration) bool {
-	return report.Date.Before(clock.Now().Add(-ago))
+	previous := clock.Now().Add(-ago)
+	return report.Date.After(previous)
 }
 
 // ReportFilter stores all information to filter reports using a ReportRepo.
