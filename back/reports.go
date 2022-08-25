@@ -1,6 +1,7 @@
 package temsys
 
 import (
+	"fmt"
 	"log"
 	"math"
 	"time"
@@ -28,9 +29,10 @@ type Report struct {
 	Value      float32   `db:"value" json:"value"`
 }
 
-func (report Report) IsRecent(clock Clock, ago time.Duration) bool {
-	previous := clock.Now().Add(-ago)
-	return report.Date.After(previous)
+func (report Report) IsOld(clock Clock, ago time.Duration) bool {
+	limit := report.Date.Add(ago)
+	fmt.Println("Is limit", limit, "after now", clock.Now())
+	return clock.Now().After(limit)
 }
 
 // ReportFilter stores all information to filter reports using a ReportRepo.

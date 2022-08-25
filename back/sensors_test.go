@@ -208,8 +208,8 @@ func TestCachedNowCase(t *testing.T) {
 		},
 	}
 	fiveMinutes := 5 * time.Minute
-	inTime := time.Date(2022, time.January, 3, 13, 12, 1, 0, time.Now().Location())
-	outTime := time.Date(2022, time.January, 3, 13, 20, 1, 0, time.Now().Location())
+	inTime := testu.TimeParseOrPanic("2022-01-03T13:13:13Z")
+	outTime := testu.TimeParseOrPanic("2022-01-03T13:20:01Z")
 
 	t.Run("Should always make a sensor request if you are admin", func(t *testing.T) {
 		expected := []temsys.ReportResponse{
@@ -328,8 +328,8 @@ func TestCachedNowCase(t *testing.T) {
 		})
 
 		res := presenter.Data.([]temsys.ReportResponse)
-		testu.Equals(t, cache.getInput, "salon")
-		testu.Equals(t, cache.updateInput, expected)
+		testu.Equals(t, "salon", cache.getInput)
+		testu.Equals(t, nowReports, cache.updateInput)
 		testu.Equals(t, expected, res)
 	})
 }

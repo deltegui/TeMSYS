@@ -1,6 +1,7 @@
 package temsys
 
 import (
+	"fmt"
 	"log"
 	"time"
 )
@@ -363,10 +364,12 @@ func (useCase CachedSensorNowCase) Exec(presenter Presenter, raw UseCaseRequest)
 		useCase.updateCacheAndPresent(req.Sensor, presenter)
 		return
 	}
-	if !reports[0].IsRecent(useCase.clock, useCase.cacheDelay) {
+	if reports[0].IsOld(useCase.clock, useCase.cacheDelay) {
+		fmt.Println("PIPO")
 		useCase.updateCacheAndPresent(req.Sensor, presenter)
 		return
 	}
+	fmt.Println("NO PIPO")
 	presenter.Present(transformReportsToResponse(reports))
 }
 
